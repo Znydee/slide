@@ -6,4 +6,5 @@ from . import views
 
 urlpatterns = [
     path('',views.home,name="slide-home" ),
+    path('<slug:slug>',views.profile,name="profile" ),
 ]
