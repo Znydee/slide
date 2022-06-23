@@ -13,12 +13,12 @@
     <img src="{{user.profile.image.url}}" class="img-fluid" alt="profile image">
     
     <div>
-        <b>farouk</b>
-        <p class="text-muted">farouz98@gmail.com</p>
+        <b>{{user.username}}</b>
+        <p class="text-muted">{{user.email}}</p>
     </div>     
     <p>hi,i'm znydee</p>
     <p class="text-muted">date joined</p>
-    <p>friends<span class="text-muted">500</span></p>
+    <p>friends<span class="text-muted">{{friends.count}}</span></p>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Posts</a>

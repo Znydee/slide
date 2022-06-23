@@ -1,15 +1,20 @@
-from django.shortcuts import render, redirect
-from .forms import UserRegisterForm
+from django.shortcuts import render, redirect,get_object_or_404
+from .forms import UserRegisterForm,PostForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User   
-from .models import FriendRequests
+from .models import FriendRequests,Profile
 # Create your views here.
 @login_required
 def home(request):
     return render(request,"users/index.html")
 
 def profile(request, slug):
-    return render(request,"users/profile.html")
+    req_slug=slug
+    user=get_object_or_404(User,username=req_slug)
+#    user=u.user
+    friends=user.friends_list.all()
+    return render(request,"users/profile.html",{"friends":friends}
+    )
 def suggested_user_list(request):
     friends_suggestion = []
     all_users= User.objects.all()
@@ -35,10 +40,21 @@ def friend_list(request):
     return render(request,{"friends","friends"})
     
 def send_friend_request(request,id):
-    user=get_or_404(User,pk=id)
+    user=get_object_or_404(User,pk=id)
     f_request=friendReuqests(sent_from=request.user,sent_to=user)
     f_request.save()
     return redirect("slide-home")
+
+def make_post(request):
+    if request.method=="POST":
+        form=PostForm(request.POST)
+        if form.is_valid():
+            form.instance.user=request.user 
+            form.save()
+            return redirect("slide-home")
+    else:
+        form=PostForm()      
+    return render(request,"users/make_post.html", {"form":form})
     
 def accept_friend_request(request,id):
     user1=get_or_404(User,pk=id)
