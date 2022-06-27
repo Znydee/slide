@@ -2,18 +2,20 @@ from django.shortcuts import render, redirect,get_object_or_404
 from .forms import UserRegisterForm,PostForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User   
-from .models import FriendRequests,Profile
+from .models import FriendRequests,Profile,Posts
 # Create your views here.
 @login_required
 def home(request):
-    return render(request,"users/index.html")
+    posts= Posts.objects.all()
+    return render(request,"users/index.html",{"post":posts})
 
 def profile(request, slug):
     req_slug=slug
     user=get_object_or_404(User,username=req_slug)
+    profiles_owner=user
 #    user=u.user
     friends=user.friends_list.all()
-    return render(request,"users/profile.html",{"friends":friends}
+    return render(request,"users/profile.html",{"friends":friends,"profiles_owner":profiles_owner}
     )
 def suggested_user_list(request):
     friends_suggestion = []
