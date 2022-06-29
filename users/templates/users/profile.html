@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'users/profilestyle.css'%}" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
 <!--
@@ -37,7 +38,7 @@
   <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">..gdvdvdv.</div>
 </div>-->
     
-<div class="container">
+<div class="container-fluid">
 <div class="profile-wrapper">
     <div class="profile-section-user">
         <div class="profile-cover-img"><img src="{{user.profile.image.url}}" alt=""></div>
@@ -120,80 +121,67 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs profile-tabs" role="tablist">
             <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#profile-overview" role="tab">Posts</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#profile-friends" role="tab">Friends</a></li>
+            {%if request.user == profiles_owner%}
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#profile-requests" role="tab">Requests</a></li>
+            {%endif%}
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#profile-likes" role="tab">Likes</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#profile-comments" role="tab">Comments</a></li>
         </ul>
         <!-- /.nav-tabs -->
         <!-- Tab panes -->
+        
         <div class="tab-content profile-tabs-content">
             <div class="tab-pane fade" id="profile-likes" role="tabpanel" aria-labelledby="home-tab">likes</div>
             <div class="tab-pane fade" id="profile-comments" role="tabpanel" aria-labelledby="home-tab">comments</div>
+            <div class="tab-pane fade" id="profile-requests" role="tabpanel" aria-labelledby="home-tab">requests</div>
+            <div class="tab-pane fade" id="profile-friends" role="tabpanel" aria-labelledby="home-tab">
+            
+            <div class="container-fluid">
+{%for item in friends%}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="people-nearby">              
+              <div class="nearby-user">
+                <div class="row">
+                  <div class="col-md-2 col-sm-2">
+                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="user" class="profile-photo-lg">
+                  </div>
+                  <div class="col-md-6 col-sm-6">
+                    <h5><a href="{% url 'profile' item.user.profile.slug%}" class="profile-link">{{item.user.username}}</a></h5>                                        
+                  </div>
+                  {%if item.user in auth_user_friends_users%}
+                  <div class="col-md-4 col-sm-4">
+                    <h6 class="mb-3 text-muted">friends</h6>
+                  </div>
+                  {%else%}
+                  <div class="col-md-4 col-sm-4">
+                    <button class=" btn-primary btn pull-right" id="{{item.user.id}}">Add Friend</button>
+                  </div>
+                  {%endif%}
+                </div>
+              </div>
+            </div>
+    	</div>
+	</div>
+{%endfor%}
+</div>
+            </div>
             <div class="tab-pane active" id="profile-overview" role="tabpanel">
-                <!--<div class="post-editor">
-                    <textarea name="post-field" id="post-field" class="post-field" placeholder="Write Something Cool!"></textarea>
-                    <div class="d-flex">
-                        <button class="btn btn-success px-4 py-1">Post</button>
-                    </div>
-                </div>-->
                 <!-- /.post-editor -->
                 <div class="stream-posts">
+{%for item in posts%}
                     <div class="stream-post">
                         <div class="sp-author">
                             <a href="#" class="sp-author-avatar"><img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt=""></a>
                             <h6 class="sp-author-name"><a href="#">{{profiles_owner.username}}</a></h6></div>
                         <div class="sp-content">
-                            <div class="sp-info">posted 1h ago</div>
-                            <p class="sp-paragraph mb-0">Auk Soldanella plainscraft acetonylidene wolfishness irrecognizant Candolleaceae provision Marsipobranchii arpen Paleoanthropus supersecular inidoneous autoplagiarism palmcrist occamy equestrianism periodontoclasia mucedin overchannel goelism decapsulation pourer zira</p>
+                            <div class="sp-info">{{item.date_posted | timesince}}</div>
+                            <p class="sp-paragraph mb-0">{{item.post}}</p>
                         </div>
                         <!-- /.sp-content -->
                     </div>
-                    <!-- /.stream-post -->
-                    <!--<div class="stream-post">
-                        <div class="sp-author">
-                            <a href="#" class="sp-author-avatar"><img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt=""></a>
-                            <h6 class="sp-author-name"><a href="#">Palmira Guthridge</a></h6></div>
-                        <div class="sp-content">
-                            <div class="sp-info">posted 1h ago</div>
-                            <p class="sp-paragraph mb-0">Auk Soldanella plainscraft acetonylidene wolfishness irrecognizant Candolleaceae provision Marsipobranchii arpen Paleoanthropus supersecular inidoneous autoplagiarism palmcrist occamy equestrianism periodontoclasia mucedin overchannel goelism decapsulation pourer zira</p>
-                        </div>
-                        <!-- /.sp-content -->
-                    <!-- </div>
-                    <!-- /.stream-post -->
-                   <!--  <div class="stream-post">
-                        <div class="sp-author">
-                            <a href="#" class="sp-author-avatar"><img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt=""></a>
-                            <h6 class="sp-author-name"><a href="#">Meghann Fraser</a></h6></div>
-                        <div class="sp-content">
-                            <div class="sp-info">posted 2h ago</div>
-                            <p class="sp-paragraph mb-0">Auk Soldanella plainscraft acetonylidene wolfishness irrecognizant Candolleaceae provision Marsipobranchii arpen Paleoanthropus supersecular inidoneous autoplagiarism palmcrist occamy equestrianism periodontoclasia mucedin overchannel goelism decapsulation pourer zira</p>
-                        </div>
-                        <!-- /.sp-content -->
-                    <!-- </div>
-                    <!-- /.stream-post -->
-                    <!-- <div class="stream-post">
-                        <div class="sp-author">
-                            <a href="#" class="sp-author-avatar"><img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt=""></a>
-                            <h6 class="sp-author-name"><a href="#">Kent Lemaitre</a></h6></div>
-                     <div class="sp-content">
-                            <div class="sp-info">posted 1h ago</div>
-                            <p class="sp-paragraph mb-0">Auk Soldanella plainscraft acetonylidene wolfishness irrecognizant Candolleaceae provision Marsipobranchii arpen Paleoanthropus supersecular inidoneous autoplagiarism palmcrist occamy equestrianism periodontoclasia mucedin overchannel goelism decapsulation pourer zira</p>
-                        </div>
-                        <!-- /.sp-content -->
-                    <!-- </div>
-                    <!-- /.stream-post -->
-                    <!-- <div class="stream-post mb-0">
-                        <div class="sp-author">
-                            <a href="#" class="sp-author-avatar"><img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt=""></a>
-                            <h6 class="sp-author-name"><a href="#">Loria Lambing</a></h6></div>
-                        <div class="sp-content">
-                            <div class="sp-info">posted 2 days ago</div>
-                            <p class="sp-paragraph">Auk Soldanella plainscraft acetonylidene wolfishness irrecognizant Candolleaceae provision Marsipobranchii arpen Paleoanthropus supersecular inidoneous</p>
-                            <p class="sp-paragraph">autoplagiarism palmcrist occamy equestrianism periodontoclasia mucedin overchannel goelism decapsulation pourer zira</p>
-                        </div>
-                        <!-- /.sp-content -->
-                    <!-- </div>
-                    <!-- /.stream-post -->
-                <!-- </div>
+{%endfor%}                   
                 <!-- /.stream-posts -->
             </div>
         </div>
@@ -202,6 +190,30 @@
     <!-- /.profile-section-main -->
 </div>
 </div>
+    
+    <script type="text/javascript">
+    $(document).ready(function(){
+    $(".btn").click(function(){
+        var elmId = $(this).attr("id");
+        alert(elmId)
+        $.ajax(
+    {
+        type:"GET",
+        url: "{% url 'send-request' %}",
+        data:{
+                 id: elmId,               
+        },
+        success: function(  ) 
+        {
+            $( "#{{elmId}}"  ).remove();
+           
+        }
+     })
+        ;
+        
+    });
+});
+  </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

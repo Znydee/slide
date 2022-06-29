@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect,get_object_or_404
+from django.http import HttpResponse
 from .forms import UserRegisterForm,PostForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User   
@@ -6,16 +7,29 @@ from .models import FriendRequests,Profile,Posts
 # Create your views here.
 @login_required
 def home(request):
+    if request.method=="POST":
+        form=PostForm(request.POST)
+        if form.is_valid():
+            form.instance.user=request.user 
+            form.save()
+            return redirect("slide-home")
+    else:
+        form=PostForm()              
     posts= Posts.objects.all()
-    return render(request,"users/index.html",{"post":posts})
+    return render(request,"users/index.html",{"post":posts,"form":form})
 
 def profile(request, slug):
+    auth_user_friends=request.user.friends_list.all()
+    auth_user_friends_users=[]
+    for item in auth_user_friends:
+        auth_user_friends_users.append(item.user)
     req_slug=slug
     user=get_object_or_404(User,username=req_slug)
     profiles_owner=user
 #    user=u.user
     friends=user.friends_list.all()
-    return render(request,"users/profile.html",{"friends":friends,"profiles_owner":profiles_owner}
+    posts=user.posts.all()
+    return render(request,"users/profile.html",{"friends":friends,"profiles_owner":profiles_owner,"posts":posts,"auth_user_friends_users":auth_user_friends_users}
     )
 def suggested_user_list(request):
     friends_suggestion = []
@@ -41,11 +55,14 @@ def friend_list(request):
     friends= request.user.friends_list.all()
     return render(request,{"friends","friends"})
     
-def send_friend_request(request,id):
-    user=get_object_or_404(User,pk=id)
-    f_request=friendReuqests(sent_from=request.user,sent_to=user)
+def send_friend_request(request):
+    user=get_object_or_404(User,pk=request.GET["id"])
+    pik=request.GET["id"]
+    #print(pik)
+    f_request=FriendRequests(sent_from=request.user,sent_to=user)
     f_request.save()
-    return redirect("slide-home")
+    return HttpResponse(pik)
+    
 
 def make_post(request):
     if request.method=="POST":

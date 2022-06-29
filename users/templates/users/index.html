@@ -12,19 +12,38 @@
     
 </head>
 <body>
-{%for item in post reversed%}
+ <!--   <div class="post-editor">
+                    <!--<textarea name="post-field" id="post-field" class="post-field" placeholder="Write Something Cool!"></textarea>
+                    <div class="d-flex">
+                        <button class="btn btn-success px-4 py-1">Post</button>
+                    </div>
+           <form method="post">
+      {% csrf_token %}
+      {{ form | crispy }}
+      <button type="submit">Post</button>
+    </form>         
+   </div>-->
+   <div class="post-editor">
+  <form method="post">
+      {% csrf_token %}
+      {{ form | crispy }}
+      <button type="submit"  class="btn btn-success px-4 py-1">Post</button>
+    </form>
+    </div>
+
 <div class="stream-posts">
+{%for item in post reversed%}
                     <div class="stream-post">
                         <div class="sp-author">
                             <a href="#" class="sp-author-avatar"><img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt=""></a>
-                            <h6 class="sp-author-name"><a href="#">{{item.user.username}}</a></h6></div>
+                            <h6 class="sp-author-name"><a href="{% url 'profile' item.user.profile.slug%}">{{item.user.username}}</a></h6></div>
                         <div class="sp-content">
                             <div class="sp-info">posted {{item.date_posted | timesince}} ago</div>
                             <p class="sp-paragraph mb-0 text-justify ">{{item.post}}</p>
                         </div>
                         <!-- /.sp-content -->
                     </div>
-{%endfor%}
+ {%endfor%}
                     <!-- /.stream-post -->
                     <!--<div class="stream-post">
                         <div class="sp-author">

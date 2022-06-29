@@ -24,3 +24,9 @@ class PostForm(forms.ModelForm):
     class Meta:
         model=Posts
         fields=["post"]
+        labels={"post":""}
+    
+    def __init__(self, *args, **kwargs):
+        super(PostForm, self).__init__(*args, **kwargs)
+        
+        self.fields['post'].widget.attrs['placeholder'] = 'Write Something Cool!'

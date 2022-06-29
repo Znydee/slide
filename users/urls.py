@@ -7,8 +7,4 @@ from . import views
 urlpatterns = [
     path('',views.home,name="slide-home" ),
     path('profiles/<slug>/',views.profile,name="profile" ),
-    path('post/',views.make_post,name="make-a-post" ),
-    
-    
-    
-]
+    ]
