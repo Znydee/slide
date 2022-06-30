@@ -29,7 +29,9 @@ def profile(request, slug):
 #    user=u.user
     friends=user.friends_list.all()
     posts=user.posts.all()
-    return render(request,"users/profile.html",{"friends":friends,"profiles_owner":profiles_owner,"posts":posts,"auth_user_friends_users":auth_user_friends_users}
+    users_requests=request.user.request_sent.all()
+    #print(users_requests.sent_to)
+    return render(request,"users/profile.html",{"friends":friends,"profiles_owner":profiles_owner,"posts":posts,"auth_user_friends_users":auth_user_friends_users,"users_requests":users_requests}
     )
 def suggested_user_list(request):
     friends_suggestion = []
@@ -60,6 +62,8 @@ def send_friend_request(request):
     pik=request.GET["id"]
     #print(pik)
     f_request=FriendRequests(sent_from=request.user,sent_to=user)
+    print(request.user)
+    print(user)
     f_request.save()
     return HttpResponse(pik)
     

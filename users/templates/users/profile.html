@@ -134,7 +134,29 @@
         <div class="tab-content profile-tabs-content">
             <div class="tab-pane fade" id="profile-likes" role="tabpanel" aria-labelledby="home-tab">likes</div>
             <div class="tab-pane fade" id="profile-comments" role="tabpanel" aria-labelledby="home-tab">comments</div>
-            <div class="tab-pane fade" id="profile-requests" role="tabpanel" aria-labelledby="home-tab">requests</div>
+            <div class="tab-pane fade" id="profile-requests" role="tabpanel" aria-labelledby="home-tab">
+            {%for item in users_requests%}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="people-nearby">              
+              <div class="nearby-user">
+                <div class="row">
+                  <div class="col-md-2 col-sm-2">
+                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="user" class="profile-photo-lg">
+                  </div>
+                  <div class="col-md-6 col-sm-6">
+                    <h5><a href="#" class="profile-link">{{item.sent_to}}</a></h5>                                        
+                  </div>
+                  <div class="col-md-4 col-sm-4">
+                    <button class=" btn-primary btn pull-right" id="{{item.user.id}}">Cancel request</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+    	</div>
+	</div>
+{%endfor%}
+            </div>
             <div class="tab-pane fade" id="profile-friends" role="tabpanel" aria-labelledby="home-tab">
             
             <div class="container-fluid">
