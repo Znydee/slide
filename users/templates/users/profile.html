@@ -10,34 +10,7 @@
     <link rel="stylesheet" href="{% static 'users/profilestyle.css'%}" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
-<body>
-<!--
-    <img src="{{user.profile.image.url}}" class="img-fluid" alt="profile image">
-    
-    <div>
-        <b>{{user.username}}</b>
-        <p class="text-muted">{{user.email}}</p>
-    </div>     
-    <p>hi,i'm znydee</p>
-    <p class="text-muted">date joined</p>
-    <p>friends<span class="text-muted">{{friends.count}}</span></p>
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-  <li class="nav-item">
-    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Posts</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Likes</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Comments</a>
-  </li>
-</ul>
-<div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">vdhdndn</div>
-  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">..gdhdb.</div>
-  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">..gdvdvdv.</div>
-</div>-->
-    
+<body>   
 <div class="container-fluid">
 <div class="profile-wrapper">
     <div class="profile-section-user">
@@ -77,40 +50,6 @@
                     </tbody>
                 </table>
             </div>
-            <!-- /.profile-info-contact -->
-        <!--    <hr class="m-0">
-            
-            <div class="profile-info-general p-4">
-                <h6 class="mb-3">General Information</h6>
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <td><strong>JOB:</strong></td>
-                            <td>
-                                <p class="text-muted mb-0">Web Developer</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>POSITION:</strong></td>
-                            <td>
-                                <p class="text-muted mb-0">Team Manager</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>STUDIED:</strong></td>
-                            <td>
-                                <p class="text-muted mb-0">Computer Science</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>LAST SEEN:</strong></td>
-                            <td>
-                                <p class="text-muted mb-0">Yesterday 8:00 AM</p>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
             <!-- /.profile-info-general -->
             <hr class="m-0">
         </div> 
@@ -144,12 +83,22 @@
                   <div class="col-md-2 col-sm-2">
                     <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="user" class="profile-photo-lg">
                   </div>
-                  <div class="col-md-6 col-sm-6">
-                    <h5><a href="#" class="profile-link">{{item.sent_to}}</a></h5>                                        
-                  </div>
                   <div class="col-md-4 col-sm-4">
-                    <button class=" btn-primary btn pull-right" id="{{item.user.id}}">Cancel request</button>
+                    {% if item.sent_from == user%}
+                        <h5><a href="#" class="profile-link">{{item.sent_to}}</a></h5>                                                         {%else%}
+                        <h5><a href="#" class="profile-link">{{item.sent_from}}</a></h5>
+                    {%endif%}
                   </div>
+                  {% if item.sent_from == user%}
+                  <div class="col-md-6 col-sm-6">
+                    <button class=" btn-outline-danger btn pull-right" id="c{{item.user.id}}">Cancel request</button>
+                  </div>
+                  {%else%}
+                    <div class="col-md-6 col-sm-6">
+                    <button class=" btn-success btn pull-right" id="a{{item.user.id}}">Accept</button>
+                    <button class=" btn-danger btn pull-right " id="d{{item.user.id}}">Decline</button>
+                  </div>             
+                  {%endif%}
                 </div>
               </div>
             </div>
@@ -225,9 +174,9 @@
         data:{
                  id: elmId,               
         },
-        success: function(  ) 
+        success: function() 
         {
-            $( "#{{elmId}}"  ).remove();
+            $( `#${elmId}`  ).remove();
            
         }
      })

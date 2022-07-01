@@ -29,8 +29,7 @@ def profile(request, slug):
 #    user=u.user
     friends=user.friends_list.all()
     posts=user.posts.all()
-    users_requests=request.user.request_sent.all()
-    #print(users_requests.sent_to)
+    users_requests=FriendRequests.objects.filter(sent_from=request.user)|FriendRequests.objects.filter(sent_to=request.user).order_by("-time_sent")
     return render(request,"users/profile.html",{"friends":friends,"profiles_owner":profiles_owner,"posts":posts,"auth_user_friends_users":auth_user_friends_users,"users_requests":users_requests}
     )
 def suggested_user_list(request):
@@ -67,7 +66,8 @@ def send_friend_request(request):
     f_request.save()
     return HttpResponse(pik)
     
-
+def cancel_request(request):
+    pass
 def make_post(request):
     if request.method=="POST":
         form=PostForm(request.POST)
