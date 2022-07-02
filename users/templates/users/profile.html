@@ -91,12 +91,12 @@
                   </div>
                   {% if item.sent_from == user%}
                   <div class="col-md-6 col-sm-6">
-                    <button class=" btn-outline-danger btn pull-right" id="c{{item.user.id}}">Cancel request</button>
+                    <button class="cbtn btn-outline-danger btn pull-right" id="{{item.user.username}}">Cancel request</button>
                   </div>
                   {%else%}
                     <div class="col-md-6 col-sm-6">
-                    <button class=" btn-success btn pull-right" id="a{{item.user.id}}">Accept</button>
-                    <button class=" btn-danger btn pull-right " id="d{{item.user.id}}">Decline</button>
+                    <button class=" btn-success btn pull-right" id="a{{item.user.username}}">Accept</button>
+                    <button class=" btn-danger btn pull-right " id="d{{item.user.username}}">Decline</button>
                   </div>             
                   {%endif%}
                 </div>
@@ -118,16 +118,20 @@
                   <div class="col-md-2 col-sm-2">
                     <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="user" class="profile-photo-lg">
                   </div>
-                  <div class="col-md-6 col-sm-6">
+                  <div class="col-md-4 col-sm-4">
                     <h5><a href="{% url 'profile' item.user.profile.slug%}" class="profile-link">{{item.user.username}}</a></h5>                                        
                   </div>
                   {%if item.user in auth_user_friends_users%}
-                  <div class="col-md-4 col-sm-4">
+                  <div class="col-md-6 col-sm-6">
                     <h6 class="mb-3 text-muted">friends</h6>
                   </div>
+                  {%elif item.user in users_requests_already_sent%}
+                  <div class="col-md-6 col-sm-6">
+                    <button class="cbtn btn-outline-danger btn pull-right" id="{{item.user.username}}">Cancel request</button>
+                  </div>
                   {%else%}
-                  <div class="col-md-4 col-sm-4">
-                    <button class=" btn-primary btn pull-right" id="{{item.user.id}}">Add Friend</button>
+                  <div class="col-md-6 col-sm-6">
+                    <button class="sbtn btn-primary btn pull-right" id="{{item.user.username}}">Add Friend</button>
                   </div>
                   {%endif%}
                 </div>
@@ -164,7 +168,8 @@
     
     <script type="text/javascript">
     $(document).ready(function(){
-    $(".btn").click(function(){
+    
+    $(document).on("click",".sbtn",function(){
         var elmId = $(this).attr("id");
         alert(elmId)
         $.ajax(
@@ -172,18 +177,31 @@
         type:"GET",
         url: "{% url 'send-request' %}",
         data:{
-                 id: elmId,               
+                 username: elmId,             
         },
         success: function() 
         {
-            $( `#${elmId}`  ).remove();
-           
+            $( `#${elmId}`  ).replaceWith(`<button class="cbtn btn-outline-danger btn pull-right" id=${elmId} >Cancel request</button>`)
         }
-     })
-        ;
-        
+     })        
     });
-});
+    $(document).on("click",".cbtn",function(){
+      var elmId = $(this).attr("id");
+        alert(elmId)
+        $.ajax(
+    {
+        type:"GET",
+        url: "{% url 'cancel-request' %}",
+        data:{
+                 username: elmId,               
+        },
+        success: function() 
+        {
+            $( `#${elmId}`  ).replaceWith(`<button class="sbtn btn-primary btn pull-right" id=${elmId}>Add Friend</button>`)
+        }
+     })    
+        });
+})
   </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

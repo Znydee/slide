@@ -21,6 +21,7 @@ def home(request):
 def profile(request, slug):
     auth_user_friends=request.user.friends_list.all()
     auth_user_friends_users=[]
+    users_requests_already_sent=[]
     for item in auth_user_friends:
         auth_user_friends_users.append(item.user)
     req_slug=slug
@@ -29,8 +30,11 @@ def profile(request, slug):
 #    user=u.user
     friends=user.friends_list.all()
     posts=user.posts.all()
+    users_requests_sent_to=FriendRequests.objects.filter(sent_from=request.user)
+    for item in users_requests_sent_to:
+        users_requests_already_sent.append(item.sent_to)
     users_requests=FriendRequests.objects.filter(sent_from=request.user)|FriendRequests.objects.filter(sent_to=request.user).order_by("-time_sent")
-    return render(request,"users/profile.html",{"friends":friends,"profiles_owner":profiles_owner,"posts":posts,"auth_user_friends_users":auth_user_friends_users,"users_requests":users_requests}
+    return render(request,"users/profile.html",{"friends":friends,"profiles_owner":profiles_owner,"posts":posts,"auth_user_friends_users":auth_user_friends_users,"users_requests":users_requests,"users_requests_already_sent":users_requests_already_sent}
     )
 def suggested_user_list(request):
     friends_suggestion = []
@@ -57,17 +61,22 @@ def friend_list(request):
     return render(request,{"friends","friends"})
     
 def send_friend_request(request):
-    user=get_object_or_404(User,pk=request.GET["id"])
-    pik=request.GET["id"]
+    user=get_object_or_404(User,username=request.GET["username"])
+    #pik=request.GET["id"]
     #print(pik)
     f_request=FriendRequests(sent_from=request.user,sent_to=user)
     print(request.user)
     print(user)
     f_request.save()
-    return HttpResponse(pik)
+    return HttpResponse("done")
     
-def cancel_request(request):
-    pass
+def cancel_friend_request(request):
+    user=get_object_or_404(User,username=request.GET["username"])
+    print(user)
+ #   users_requests=FriendRequests.objects.filter(sent_from=request.user)&FriendRequests.objects.filter(sent_to=user)
+    users_requests=FriendRequests.objects.get(sent_from=request.user, sent_to=user)
+    users_requests.delete()
+    return HttpResponse("done")
 def make_post(request):
     if request.method=="POST":
         form=PostForm(request.POST)
