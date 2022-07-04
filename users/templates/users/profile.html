@@ -91,12 +91,12 @@
                   </div>
                   {% if item.sent_from == user%}
                   <div class="col-md-6 col-sm-6">
-                    <button class="cbtn btn-outline-danger btn pull-right" id="{{item.user.username}}">Cancel request</button>
+                    <button class="cbtn btn-outline-danger btn pull-right" id="c1{{item.user.username}}">Cancel request</button>
                   </div>
                   {%else%}
                     <div class="col-md-6 col-sm-6">
-                    <button class=" btn-success btn pull-right" id="a{{item.user.username}}">Accept</button>
-                    <button class=" btn-danger btn pull-right " id="d{{item.user.username}}">Decline</button>
+                    <button class="abtn btn-success btn pull-right" id="a1{{item.sent_from.username}}">Accept</button>
+                    <button class="dbtn btn-danger btn pull-right " id="d1{{item.sent_from.username}}">Decline</button>
                   </div>             
                   {%endif%}
                 </div>
@@ -127,11 +127,16 @@
                   </div>
                   {%elif item.user in users_requests_already_sent%}
                   <div class="col-md-6 col-sm-6">
-                    <button class="cbtn btn-outline-danger btn pull-right" id="{{item.user.username}}">Cancel request</button>
+                    <button class="cbtn btn-outline-danger btn pull-right" id="c2{{item.user.username}}">Cancel request</button>
                   </div>
+                  {%elif item.user in users_requests_already_recieved%}
+                  <div class="col-md-6 col-sm-6">
+                    <button class="abtn btn-success btn pull-right" id="a2{{item.user.username}}">Accept</button>
+                    <button class="dbtn btn-danger btn pull-right " id="d2{{item.user.username}}">Decline</button>
+                  </div> 
                   {%else%}
                   <div class="col-md-6 col-sm-6">
-                    <button class="sbtn btn-primary btn pull-right" id="{{item.user.username}}">Add Friend</button>
+                    <button class="sbtn btn-primary btn pull-right" id="ad{{item.user.username}}">Add Friend</button>
                   </div>
                   {%endif%}
                 </div>
@@ -168,36 +173,76 @@
     
     <script type="text/javascript">
     $(document).ready(function(){
-    
+    $(document).on("click",".dbtn",function(){
+        var elmId = $(this).attr("id");
+        var elmIdd = elmId.substring(2) ;
+        var elmIddd = elmId.substring(1) ;
+        alert(elmIdd)
+        $.ajax(
+    {
+        type:"GET",
+        url: "{% url 'decline-request' %}",
+        data:{
+                 username: elmIdd,             
+        },
+        success: function() 
+        {
+            $( `#${elmId}`  ).replaceWith(`<h6 class="mb-3 text-danger">Request Declined</h6>`)
+            $( `#a${elmIddd}`  ).remove()
+
+        }
+     })        
+    });
+    $(document).on("click",".abtn",function(){
+        var elmId = $(this).attr("id");
+        var elmIdd = elmId.substring(2) ;
+        var elmIddd = elmId.substring(1) ;
+        alert(elmIdd)
+        $.ajax(
+    {
+        type:"GET",
+        url: "{% url 'accept-request' %}",
+        data:{
+                 username: elmIdd,             
+        },
+        success: function() 
+        {
+            $( `#${elmId}`  ).replaceWith(`<h6 class="mb-3 text-success">Request Accepted</h6>`)
+            $( `#d${elmIddd}`  ).remove()
+        }
+     })        
+    });
     $(document).on("click",".sbtn",function(){
         var elmId = $(this).attr("id");
-        alert(elmId)
+        var elmIdd = elmId.substring(2) ;
+        alert(elmIdd)
         $.ajax(
     {
         type:"GET",
         url: "{% url 'send-request' %}",
         data:{
-                 username: elmId,             
+                 username: elmIdd,             
         },
         success: function() 
         {
-            $( `#${elmId}`  ).replaceWith(`<button class="cbtn btn-outline-danger btn pull-right" id=${elmId} >Cancel request</button>`)
+            $( `#${elmId}`  ).replaceWith(`<button class="cbtn btn-outline-danger btn pull-right" id=c3${elmIdd} >Cancel request</button>`)
         }
      })        
     });
     $(document).on("click",".cbtn",function(){
       var elmId = $(this).attr("id");
-        alert(elmId)
+      var elmIdd = elmId.substring(2) ;
+        alert(elmIdd)
         $.ajax(
     {
         type:"GET",
         url: "{% url 'cancel-request' %}",
         data:{
-                 username: elmId,               
+                 username: elmIdd,               
         },
         success: function() 
         {
-            $( `#${elmId}`  ).replaceWith(`<button class="sbtn btn-primary btn pull-right" id=${elmId}>Add Friend</button>`)
+            $( `#${elmId}`  ).replaceWith(`<button class="sbtn btn-primary btn pull-right" id=ad${elmIdd}>Add Friend</button>`)
         }
      })    
         });

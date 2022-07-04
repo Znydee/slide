@@ -22,6 +22,7 @@ def profile(request, slug):
     auth_user_friends=request.user.friends_list.all()
     auth_user_friends_users=[]
     users_requests_already_sent=[]
+    users_requests_already_recieved=[]
     for item in auth_user_friends:
         auth_user_friends_users.append(item.user)
     req_slug=slug
@@ -31,10 +32,13 @@ def profile(request, slug):
     friends=user.friends_list.all()
     posts=user.posts.all()
     users_requests_sent_to=FriendRequests.objects.filter(sent_from=request.user)
+    users_requests_recieved_from=FriendRequests.objects.filter(sent_to=request.user)
     for item in users_requests_sent_to:
         users_requests_already_sent.append(item.sent_to)
+    for item in users_requests_recieved_from:
+        users_requests_already_recieved.append(item.sent_from)     
     users_requests=FriendRequests.objects.filter(sent_from=request.user)|FriendRequests.objects.filter(sent_to=request.user).order_by("-time_sent")
-    return render(request,"users/profile.html",{"friends":friends,"profiles_owner":profiles_owner,"posts":posts,"auth_user_friends_users":auth_user_friends_users,"users_requests":users_requests,"users_requests_already_sent":users_requests_already_sent}
+    return render(request,"users/profile.html",{"friends":friends,"profiles_owner":profiles_owner,"posts":posts,"auth_user_friends_users":auth_user_friends_users,"users_requests":users_requests,"users_requests_already_sent":users_requests_already_sent,"users_requests_already_recieved":users_requests_already_recieved}
     )
 def suggested_user_list(request):
     friends_suggestion = []
@@ -88,12 +92,18 @@ def make_post(request):
         form=PostForm()      
     return render(request,"users/make_post.html", {"form":form})
     
-def accept_friend_request(request,id):
-    user1=get_or_404(User,pk=id)
-    request.user.friends_list.add(user1)
+def accept_friend_request(request):
+    user1=get_object_or_404(User,username=request.GET["username"])
+    request.user.profile.friends.add(user1)
     user1.profile.friends.add(request.user)
-    return redirect("slide-home")
-     
+    req= FriendRequests.objects.filter(sent_from=user1, sent_to=request.user).delete()
+    return HttpResponse("done")
+    
+def decline_friend_request(request):  
+    user1=get_object_or_404(User,username=request.GET["username"])
+    req= FriendRequests.objects.filter(sent_from=user1, sent_to=request.user).delete()
+    return HttpResponse("done")
+  
 def register(request):    
     if request.method=="POST":
         form = UserRegisterForm(request.POST)
