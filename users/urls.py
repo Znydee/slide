@@ -7,4 +7,5 @@ from . import views
 urlpatterns = [
     path('',views.home,name="slide-home" ),
     path('profiles/<slug>/',views.profile,name="profile" ),
+    path('<slug>/<id>/',views.detailedpost,name="detailed-post" ),
     ]

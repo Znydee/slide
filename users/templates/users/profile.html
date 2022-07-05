@@ -121,10 +121,12 @@
                   <div class="col-md-4 col-sm-4">
                     <h5><a href="{% url 'profile' item.user.profile.slug%}" class="profile-link">{{item.user.username}}</a></h5>                                        
                   </div>
-                  {%if item.user in auth_user_friends_users%}
+                  {%if item.user == user%}
+                  {%elif item.user in auth_user_friends_users%}
                   <div class="col-md-6 col-sm-6">
                     <h6 class="mb-3 text-muted">friends</h6>
-                  </div>
+                  </div>                
+                  
                   {%elif item.user in users_requests_already_sent%}
                   <div class="col-md-6 col-sm-6">
                     <button class="cbtn btn-outline-danger btn pull-right" id="c2{{item.user.username}}">Cancel request</button>

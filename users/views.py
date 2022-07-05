@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from .forms import UserRegisterForm,PostForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User   
-from .models import FriendRequests,Profile,Posts
+from .models import FriendRequests,Profile,Posts,Comment
 # Create your views here.
 @login_required
 def home(request):
@@ -17,6 +17,11 @@ def home(request):
         form=PostForm()              
     posts= Posts.objects.all()
     return render(request,"users/index.html",{"post":posts,"form":form})
+    
+def detailedpost(request,slug,id):               
+    det_post=get_object_or_404(Posts,pk=id)
+    comments=Comment.objects.filter(post=det_post)
+    return render(request,"users/detailedpost.html",{"post":det_post,"comments":comments})    
 
 def profile(request, slug):
     auth_user_friends=request.user.friends_list.all()
