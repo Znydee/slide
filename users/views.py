@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponse
-from .forms import UserRegisterForm,PostForm
+from .forms import UserRegisterForm,PostForm,CommentForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User   
-from .models import FriendRequests,Profile,Posts,Comment
+from .models import FriendRequests,Profile,Posts,Comment,Like
 # Create your views here.
 @login_required
 def home(request):
@@ -15,13 +15,29 @@ def home(request):
             return redirect("slide-home")
     else:
         form=PostForm()              
+    user_liked_post = []
     posts= Posts.objects.all()
-    return render(request,"users/index.html",{"post":posts,"form":form})
+    user_likes=Like.objects.filter(user=request.user)
+    for item in user_likes:
+        user_liked_post.append(item.post)
+    return render(request,"users/index.html",{"post":posts,"form":form,"user_liked_post":user_liked_post})
     
-def detailedpost(request,slug,id):               
+def detailedpost(request,slug,id):
     det_post=get_object_or_404(Posts,pk=id)
+    if request.method=="POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            form.instance.user=request.user 
+            form.instance.post= det_post
+            form.save()
+            return redirect("detailed-post", slug=slug, id=id)
+    else:
+            form=CommentForm()               
     comments=Comment.objects.filter(post=det_post)
-    return render(request,"users/detailedpost.html",{"post":det_post,"comments":comments})    
+    post_likes=det_post.likes.all()
+    user_liked_post=Like.objects.filter(user=request.user,post=det_post).first()
+    print(user_liked_post)
+    return render(request,"users/detailedpost.html",{"post":det_post,"comments":comments,"post_likes":post_likes,"user_liked_post":user_liked_post,"form":form})    
 
 def profile(request, slug):
     auth_user_friends=request.user.friends_list.all()
@@ -64,7 +80,21 @@ def suggested_user_list(request):
                 friends_suggestion.append(f)
     print(friends_suggestion)
     return render(request,"users/profile.html",{"friends_suggestion":friends_suggestion,friend_requests_sent:"friend_requests_sent"})
-    
+
+def like_post(request):
+    id=request.GET["id"]
+    det_post=get_object_or_404(Posts,id=id)         
+    like_post=Like.objects.filter(post=det_post,user=request.user)
+    print("hiiii")
+    if like_post:
+        like_post.delete()
+        state="not_liked"
+    else:
+        like_post= Like(post=det_post,user=request.user) 
+        like_post.save()
+        state="liked"
+    return HttpResponse(state)
+
 def friend_list(request):
     friends= request.user.friends_list.all()
     return render(request,{"friends","friends"})
@@ -118,3 +148,5 @@ def register(request):
     else:
         form=UserRegisterForm ()            
     return render(request,"users/register.html", {"form":form})
+    
+        

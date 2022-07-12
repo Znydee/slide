@@ -1,5 +1,13 @@
 
-.post-editor,
+
+.post-editor{
+    padding: .75rem;
+    background: #f7f7f9;
+    border: 1px solid #eceeef;
+    border-radius: .25rem;
+    margin-bottom: 1.5rem
+}
+
 .stream-post {
     padding: .75rem;
     background: #f7f7f9;

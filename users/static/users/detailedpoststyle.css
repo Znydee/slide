@@ -3,7 +3,6 @@ body{margin-top:20px;}
 /*==================================================
   Post Contents CSS
   ==================================================*/
-
 .post-content{
   background: #f8f8f8;
   border-radius: 4px;
@@ -86,3 +85,13 @@ img.profile-photo-sm {
     font-size: 12px;
     margin-left: 20px;
 }
+
+.libtn{
+color: blue;
+}
+
+.t-area{
+padding-left: 0px;
+}
+
+
