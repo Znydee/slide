@@ -17,18 +17,18 @@
         <h1 class="text-center" style="background:#4267B2;  color: white">Slide</h1>
 </div>
 <!-- Nav tabs -->
-<ul class="nav nav-tabs" id="myTab" role="tablist">
+<ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
   <li class="nav-item" role="presentation">
-    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true"><i class="fa fa-home "></i></a>
   </li>
   <li class="nav-item" role="presentation">
-    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><i class="fa fa-user-plus"></i></a>
   </li>
   <li class="nav-item" role="presentation">
-    <a class="nav-link" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false">Messages</a>
+    <a class="nav-link" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false"><i class="fa fa-bell "></i></a>
   </li>
   <li class="nav-item" role="presentation">
-    <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Settings</a>
+    <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false"><i class="fa fa-bars "></i></a>
   </li>
 </ul>
 
@@ -82,13 +82,66 @@
  {%endfor%}
  </div>                    
   </div>
-  <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+  <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+      {% for item in friends_suggestion %}
+      <div class="row">
+        <div class="col-md-8">
+            <div class="people-nearby">              
+              <div class="nearby-user">
+                <div class="row">
+                  <div class="col-md-2 col-sm-2">
+                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="user" class="profile-photo-lg">
+                  </div>
+                  <div class="col-md-4 col-sm-4">
+                        <h5><a href="#" class="profile-link">{{item.username}}</a></h5>            <button class="sbtn btn-primary btn pull-left"  id="ad{{item.username}}">Add Friend</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+    	</div>
+	</div>
+      {% endfor %}
+  </div>
   <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab"> 
   </div>
   <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
 </div>
   <script type="text/javascript">
     $(document).ready(function(){
+    $(document).on("click",".sbtn",function(){
+        var elmId = $(this).attr("id");
+        var elmIdd = elmId.substring(2) ;
+        alert(elmIdd)
+        $.ajax(
+    {
+        type:"GET",
+        url: "{% url 'send-request' %}",
+        data:{
+                 username: elmIdd,             
+        },
+        success: function() 
+        {
+            $( `#${elmId}`  ).replaceWith(`<button class="cbtn btn-outline-danger btn pull-left" id=c3${elmIdd} >Cancel request</button>`)
+        }
+     })        
+    });
+    $(document).on("click",".cbtn",function(){
+      var elmId = $(this).attr("id");
+      var elmIdd = elmId.substring(2) ;
+        alert(elmIdd)
+        $.ajax(
+    {
+        type:"GET",
+        url: "{% url 'cancel-request' %}",
+        data:{
+                 username: elmIdd,               
+        },
+        success: function() 
+        {
+            $( `#${elmId}`  ).replaceWith(`<button class="sbtn btn-primary btn pull-left" id=ad${elmIdd}>Add Friend</button>`)
+        }
+     })    
+        });
     $(document).on("click",".libtn",function(){
         //alert("elmIdd")
         var elmId = $(this).attr("id");

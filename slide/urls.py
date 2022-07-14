@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
-from users.views import register,send_friend_request,suggested_user_list,cancel_friend_request,accept_friend_request, decline_friend_request,like_post
+from users.views import register,send_friend_request,cancel_friend_request,accept_friend_request, decline_friend_request,like_post
 from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('admin/', admin.site.urls),

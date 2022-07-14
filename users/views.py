@@ -20,7 +20,24 @@ def home(request):
     user_likes=Like.objects.filter(user=request.user)
     for item in user_likes:
         user_liked_post.append(item.post)
-    return render(request,"users/index.html",{"post":posts,"form":form,"user_liked_post":user_liked_post})
+    friends_suggestion = []
+    all_users= User.objects.all()
+    friend_requests_sent= FriendRequests.objects.filter(sent_from=request.user)
+    users_friends= request.user.friends_list.exclude(user=request.user)
+    users_friends_user_list = []
+    for friend in users_friends:
+        users_friends_user_list.append(friend.user)
+    print(users_friends_user_list)
+    for friend in users_friends:
+        friends_friend = friend.friends.all()
+        #print(friend,friends_friend)
+        for f in friends_friend:
+            if f in users_friends_user_list or f == request.user or FriendRequests.objects.filter(sent_from=request.user,sent_to=f):
+                pass
+            else:
+                friends_suggestion.append(f)
+    print(friends_suggestion)
+    return render(request,"users/index.html",{"post":posts,"form":form,"user_liked_post":user_liked_post,"friends_suggestion":friends_suggestion})
     
 def detailedpost(request,slug,id):
     det_post=get_object_or_404(Posts,pk=id)
@@ -61,25 +78,25 @@ def profile(request, slug):
     users_requests=FriendRequests.objects.filter(sent_from=request.user)|FriendRequests.objects.filter(sent_to=request.user).order_by("-time_sent")
     return render(request,"users/profile.html",{"friends":friends,"profiles_owner":profiles_owner,"posts":posts,"auth_user_friends_users":auth_user_friends_users,"users_requests":users_requests,"users_requests_already_sent":users_requests_already_sent,"users_requests_already_recieved":users_requests_already_recieved}
     )
-def suggested_user_list(request):
-    friends_suggestion = []
-    all_users= User.objects.all()
-    friend_requests_sent= FriendRequests.objects.filter(sent_from=request.user)
-    users_friends= request.user.friends_list.exclude(user=request.user)
-    users_friends_user_list = []
-    for friend in users_friends:
-        users_friends_user_list.append(friend.user)
-    print(users_friends_user_list)
-    for friend in users_friends:
-        friends_friend = friend.friends.all()
-        #print(friend,friends_friend)
-        for f in friends_friend:
-            if f in users_friends_user_list or f == request.user:
-                pass
-            else:
-                friends_suggestion.append(f)
-    print(friends_suggestion)
-    return render(request,"users/profile.html",{"friends_suggestion":friends_suggestion,friend_requests_sent:"friend_requests_sent"})
+#def suggested_user_list(request):
+#    friends_suggestion = []
+#    all_users= User.objects.all()
+#    friend_requests_sent= FriendRequests.objects.filter(sent_from=request.user)
+#    users_friends= request.user.friends_list.exclude(user=request.user)
+#    users_friends_user_list = []
+#    for friend in users_friends:
+#        users_friends_user_list.append(friend.user)
+#    print(users_friends_user_list)
+#    for friend in users_friends:
+#        friends_friend = friend.friends.all()
+#        #print(friend,friends_friend)
+#        for f in friends_friend:
+#            if f in users_friends_user_list or f == request.user:
+#                pass
+#            else:
+#                friends_suggestion.append(f)
+#    print(friends_suggestion)
+#    return render(request,"users/profile.html",{"friends_suggestion":friends_suggestion,friend_requests_sent:"friend_requests_sent"})
 
 def like_post(request):
     id=request.GET["id"]

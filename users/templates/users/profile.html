@@ -91,7 +91,7 @@
                   </div>
                   {% if item.sent_from == user%}
                   <div class="col-md-6 col-sm-6">
-                    <button class="cbtn btn-outline-danger btn pull-right" id="c1{{item.user.username}}">Cancel request</button>
+                    <button class="cbtn btn-outline-danger btn pull-right" id="c1{{item.sent_to.username}}">Cancel request</button>
                   </div>
                   {%else%}
                     <div class="col-md-6 col-sm-6">
