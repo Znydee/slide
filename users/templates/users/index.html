@@ -1,5 +1,6 @@
 {%load static%}
 {% load crispy_forms_tags %}
+{%load comment_tags%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,6 +16,25 @@
 <div class="container-fluid" style="margin-top: 20px;">
         <h1 class="text-center" style="background:#4267B2;  color: white">Slide</h1>
 </div>
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+  </li>
+  <li class="nav-item" role="presentation">
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
+  </li>
+  <li class="nav-item" role="presentation">
+    <a class="nav-link" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false">Messages</a>
+  </li>
+  <li class="nav-item" role="presentation">
+    <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Settings</a>
+  </li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+  <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
    <div class="post-editor container-fluid ">
   <form method="post">
       {% csrf_token %}
@@ -34,7 +54,11 @@
                             {%else%}
                             <a class="btn " id="li{{item.id}}"><i class="fa fa-thumbs-up "></i> {{item.likes.count}}</a>
                             {%endif%}
-                            <a class="btn " id="li{{item.id}}"><i class="fa fa-comment "></i> {{item.post_comments.count}}</a>
+                            {% if item|has_comment:request.user == "yes"%}
+                            <a class="btn " id="li{{item.id}}" style="color:#4267B2;"><i class="fa fa-comment " ></i> {{item.post_comments.count}}</a>
+                            {%else%}
+                                <a class="btn " id="li{{item.id}}"><i class="fa fa-comment "></i> {{item.post_comments.count}}</a>
+                            {% endif %}
                             </div>
                         <div class="sp-content" onclick="location.href='{% url 'detailed-post' item.user.profile.slug item.id%}'">
                             <div class="sp-info">posted {{item.date_posted | timesince}} ago</div>
@@ -49,12 +73,20 @@
                          {%else%}
                          <button type="button" class="libtn btn btn-outline-primary" id="lk{{item.id}}">like</button>
                           {%endif%}
+                          
                             <a href="{% url 'detailed-post' item.user.profile.slug item.id%}" class="btn btn-outline-primary">comment</a>
+                            
                         </div>
                     </div>
                     
  {%endfor%}
- </div>                  
+ </div>                    
+  </div>
+  <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+  <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab"> 
+  </div>
+  <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
+</div>
   <script type="text/javascript">
     $(document).ready(function(){
     $(document).on("click",".libtn",function(){
