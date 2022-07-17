@@ -4,6 +4,7 @@ from .forms import UserRegisterForm,PostForm,CommentForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User   
 from .models import FriendRequests,Profile,Posts,Comment,Like
+from notifications.signals import notify
 # Create your views here.
 @login_required
 def home(request):
@@ -109,6 +110,9 @@ def like_post(request):
     else:
         like_post= Like(post=det_post,user=request.user) 
         like_post.save()
+        sender = request.user
+        receiver = det_post.user
+        notify.send(sender, recipient=receiver, verb="liked post")
         state="liked"
     return HttpResponse(state)
 

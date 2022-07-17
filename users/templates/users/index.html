@@ -1,6 +1,7 @@
 {%load static%}
 {% load crispy_forms_tags %}
 {%load comment_tags%}
+{% load notifications_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -103,6 +104,11 @@
       {% endfor %}
   </div>
   <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab"> 
+  {% notifications_unread as unread_count %}
+...
+{% if unread_count %}
+    You have <strong>{{ unread_count }}</strong> unread notifications.
+{% endif %}
   </div>
   <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
 </div>

@@ -19,6 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from users.views import register,send_friend_request,cancel_friend_request,accept_friend_request, decline_friend_request,like_post
 from django.contrib.auth import views as auth_views
+import notifications.urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('users.urls')),
@@ -30,6 +31,7 @@ urlpatterns = [
     path('acceptrequest',accept_friend_request,name="accept-request"),
     path('declinerequest', decline_friend_request,name="decline-request"),
     path('likepost', like_post,name="like-post"),
+    path('^inbox/notifications/', include(notifications.urls, namespace='notifications')),
     
 ]
 
