@@ -26,7 +26,7 @@
     <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><i class="fa fa-user-plus"></i></a>
   </li>
   <li class="nav-item" role="presentation">
-    <a class="nav-link" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false"><i class="fa fa-bell "></i><span class="badge">{% live_notify_badge %}</span></a>
+    <a class="nav-link btn" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false"><i class="fa fa-bell "></i><span class="badge">{% live_notify_badge %}</span></a>
   </li>
   <li class="nav-item" role="presentation">
     <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false"><i class="fa fa-bars "></i></a>
@@ -104,16 +104,39 @@
       {% endfor %}
   </div>
   <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab"> 
-  {% notifications_unread as unread_count %}
-...
-{% if unread_count %}
-    You have <strong>{{ unread_count }}</strong> unread notifications.
-{% endif %}
+<!--  {%live_notify_list%}-->
+<div class="list-group">
+      {% for notification in  user.notifications.all %}
+   <a href="#" class="list-group-item list-group-item-action">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">{{notification.description}}</h5>
+      <p class="text-muted">{{notification.timestamp | timesince}}<p>
+    </div>
+    <p class="mb-1">Some placeholder content in a paragraph.</p>
+    <p class="text-muted">And some muted small print.</p>
+  </a>
+  {% endfor %}
+</div>
+	      <!--		<div>
+	      		Message from <b>{{ notification.actor }}</b>
+				<button class="dropdown-item" type="button">{{ notification.description }}</button>			
+				</div>
+				<div class="dropdown-divider"></div>-->
   </div>
   <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
 </div>
   <script type="text/javascript">
     $(document).ready(function(){
+    $(document).on("click","#messages-tab",function(){
+        var elmId = $(this).attr("id");
+   //     var elmIdd = elmId.substring(2) ;
+        alert(elmId)
+        $.ajax(
+    {
+        type:"GET",
+        url: "{% url 'mark-notification-as-read' %}",
+     })        
+    });
     $(document).on("click",".sbtn",function(){
         var elmId = $(this).attr("id");
         var elmIdd = elmId.substring(2) ;

@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User   
 from .models import FriendRequests,Profile,Posts,Comment,Like
 from notifications.signals import notify
+import notifications
 # Create your views here.
 @login_required
 def home(request):
@@ -39,7 +40,12 @@ def home(request):
                 friends_suggestion.append(f)
     print(friends_suggestion)
     return render(request,"users/index.html",{"post":posts,"form":form,"user_liked_post":user_liked_post,"friends_suggestion":friends_suggestion})
-    
+
+def notifications_as_read(request):
+    print(request.user.notifications.unread())
+    request.user.notifications.mark_all_as_read()       
+    print("done") 
+    return HttpResponse("done")
 def detailedpost(request,slug,id):
     det_post=get_object_or_404(Posts,pk=id)
     if request.method=="POST":
@@ -112,7 +118,7 @@ def like_post(request):
         like_post.save()
         sender = request.user
         receiver = det_post.user
-        notify.send(sender, recipient=receiver, verb="liked post")
+        notify.send(sender, recipient=receiver, verb="like post", description=f"{sender.username} liked your post")
         state="liked"
     return HttpResponse(state)
 
