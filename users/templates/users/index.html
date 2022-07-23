@@ -26,7 +26,7 @@
     <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><i class="fa fa-user-plus"></i></a>
   </li>
   <li class="nav-item" role="presentation">
-    <a class="nav-link btn" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false"><i class="fa fa-bell "></i><span class="badge">{% live_notify_badge %}</span></a>
+    <a class="nav-link btn" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false"><i class="fa fa-bell "></i><span class="badge">{%live_notify_badge%}</span></a>
   </li>
   <li class="nav-item" role="presentation">
     <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false"><i class="fa fa-bars "></i></a>
@@ -105,17 +105,29 @@
   </div>
   <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab"> 
 <!--  {%live_notify_list%}-->
-<div class="list-group">
-      {% for notification in  user.notifications.all %}
+<div class="list-group" id="notification_list">
+      <!--{% for notification in  user.notifications.all %}
    <a href="#" class="list-group-item list-group-item-action">
-    <div class="d-flex w-100 justify-content-between">
-      <h5 class="mb-1">{{notification.description}}</h5>
-      <p class="text-muted">{{notification.timestamp | timesince}}<p>
+    
+     <div class="stream-post">    
+     <div class="container-fluid" >
+          <div class="row">
+                <div class="col-6" style="padding-left:0px;">
+                      <h5>{{notification.description}}</h5>
+                </div>
+                <div class="col-6" style="padding-right:0px;">
+                      <p class="text-muted text-right">{{notification.timestamp | timesince}}<p>
+                </div>
+          </div>
     </div>
-    <p class="mb-1">Some placeholder content in a paragraph.</p>
-    <p class="text-muted">And some muted small print.</p>
+                     
+                        <div class="sp-content" >                                                
+                            <p class="sp-paragraph mb-0 text-justify ">{{notification.action_object.post}}</p>
+                            
+                        </div>
+                    </div>
   </a>
-  {% endfor %}
+  {% endfor %}-->
 </div>
 	      <!--		<div>
 	      		Message from <b>{{ notification.actor }}</b>
@@ -130,12 +142,37 @@
     $(document).on("click","#messages-tab",function(){
         var elmId = $(this).attr("id");
    //     var elmIdd = elmId.substring(2) ;
-        alert(elmId)
+   //     alert(elmId);
         $.ajax(
     {
         type:"GET",
+        url: "{% url 'get-all-notifications' %}",
+        dataType: 'json',
+        success: function(data1) 
+        {
+       //     var string = "{{user.notifications.all | safe}}";
+           // alert("ajax1 completed");
+            var notifications= data1;
+         for (let item in notifications) {
+     //   alert(notifications[item].action_object);
+          $( "#notification_list" ).append(
+          `<a href="#" class="list-group-item list-group-item-action"><div class="stream-post"><div class="container-fluid" ><div class="row"><div class="col-6" style="padding-left:0px;"><h5>${notifications[item].description}</h5></div><div class="col-6" style="padding-right:0px;"><p class="text-muted text-right">${notifications[item].timesince_format} ago</p></div></div></div><div class="sp-content" ><p class="sp-paragraph mb-0 text-justify ">${notifications[item].data.rel_obj_content}</p></div></div></a>`          
+          );
+
+         }
+          $( `#${elmId}`  ).replaceWith(`<a class="nav-link btn" id=${elmId} data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false"><i class="fa fa-bell "></i></a>`);
+             $.ajax(
+    {
+        type:"GET",
         url: "{% url 'mark-notification-as-read' %}",
-     })        
+        success: function(data) 
+        {
+            var string = "{{user.notifications.all | safe}}";
+          //  alert("ajax2 completed");
+        }
+     })  
+        }
+     });      
     });
     $(document).on("click",".sbtn",function(){
         var elmId = $(this).attr("id");

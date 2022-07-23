@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
-from users.views import register,send_friend_request,cancel_friend_request,accept_friend_request, decline_friend_request,like_post,notifications_as_read
+from users.views import register,send_friend_request,cancel_friend_request,accept_friend_request, decline_friend_request,like_post,notifications_as_read,get_all_notifications
 from django.contrib.auth import views as auth_views
 import notifications.urls
 urlpatterns = [
@@ -33,7 +33,7 @@ urlpatterns = [
     path('likepost', like_post,name="like-post"),
     path('^inbox/notifications/', include(notifications.urls, namespace='notifications')),
     path('readnotification', notifications_as_read,name="mark-notification-as-read"),
-    
+    path('getallnotifications', get_all_notifications,name="get-all-notifications"),
 ]
 
 if settings.DEBUG:

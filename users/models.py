@@ -14,7 +14,7 @@ class Profile(models.Model):
 class Posts(models.Model):
     user=models.ForeignKey(User,related_name="posts",on_delete=models.CASCADE)       
     post=models.TextField(blank=False)
-    date_posted=models.            DateTimeField(auto_now_add=True)
+    date_posted=models.DateTimeField(auto_now_add=True)
     
 class FriendRequests(models.Model):
     sent_from = models.ForeignKey(User,related_name="request_sent",on_delete=models.CASCADE)

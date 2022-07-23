@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect,get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from .forms import UserRegisterForm,PostForm,CommentForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User   
 from .models import FriendRequests,Profile,Posts,Comment,Like
 from notifications.signals import notify
 import notifications
+from django.utils.timesince import timesince
 # Create your views here.
 @login_required
 def home(request):
@@ -41,10 +42,16 @@ def home(request):
     print(friends_suggestion)
     return render(request,"users/index.html",{"post":posts,"form":form,"user_liked_post":user_liked_post,"friends_suggestion":friends_suggestion})
 
+def get_all_notifications(request):
+    all_notifications=request.user.notifications.all()
+    all_notifications=list(all_notifications.values())
+    for item in all_notifications:
+        timesince_format=timesince(item["timestamp"])
+        item["timesince_format"]=timesince_format    
+    return JsonResponse(all_notifications, safe=False)
+
 def notifications_as_read(request):
-    print(request.user.notifications.unread())
     request.user.notifications.mark_all_as_read()       
-    print("done") 
     return HttpResponse("done")
 def detailedpost(request,slug,id):
     det_post=get_object_or_404(Posts,pk=id)
@@ -54,13 +61,15 @@ def detailedpost(request,slug,id):
             form.instance.user=request.user 
             form.instance.post= det_post
             form.save()
+            sender = request.user
+            receiver = det_post.user
+            notify.send(sender, recipient=receiver, verb="comment on post", description=f"{sender.username} commented on your post",rel_obj_content=det_post.post)
             return redirect("detailed-post", slug=slug, id=id)
     else:
             form=CommentForm()               
     comments=Comment.objects.filter(post=det_post)
     post_likes=det_post.likes.all()
     user_liked_post=Like.objects.filter(user=request.user,post=det_post).first()
-    print(user_liked_post)
     return render(request,"users/detailedpost.html",{"post":det_post,"comments":comments,"post_likes":post_likes,"user_liked_post":user_liked_post,"form":form})    
 
 def profile(request, slug):
@@ -118,7 +127,7 @@ def like_post(request):
         like_post.save()
         sender = request.user
         receiver = det_post.user
-        notify.send(sender, recipient=receiver, verb="like post", description=f"{sender.username} liked your post")
+        notify.send(sender, recipient=receiver, verb="like post", description=f"{sender.username} liked your post",rel_obj_content=det_post.post)
         state="liked"
     return HttpResponse(state)
 
