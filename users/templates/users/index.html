@@ -155,10 +155,12 @@
             var notifications= data1;
          for (let item in notifications) {
      //   alert(notifications[item].action_object);
-          $( "#notification_list" ).append(
-          `<a href="#" class="list-group-item list-group-item-action"><div class="stream-post"><div class="container-fluid" ><div class="row"><div class="col-6" style="padding-left:0px;"><h5>${notifications[item].description}</h5></div><div class="col-6" style="padding-right:0px;"><p class="text-muted text-right">${notifications[item].timesince_format} ago</p></div></div></div><div class="sp-content" ><p class="sp-paragraph mb-0 text-justify ">${notifications[item].data.rel_obj_content}</p></div></div></a>`          
+          if (notifications[item].unread) {$( "#notification_list" ).append(
+          `<a href="#" class="list-group-item list-group-item-dark"><div class="stream-post"><div class="container-fluid" ><div class="row"><div class="col-6" style="padding-left:0px;"><h5>${notifications[item].description}</h5></div><div class="col-6" style="padding-right:0px;"><p class="text-muted text-right">${notifications[item].timesince_format} ago</p></div></div></div><div class="sp-content" ><p class="sp-paragraph mb-0 text-justify ">${notifications[item].data.rel_obj_content}</p></div></div></a>`          
+          );}else {$( "#notification_list" ).append(`<a href="#" class="list-group-item list-group-item-light"><div class="stream-post"><div class="container-fluid" ><div class="row"><div class="col-6" style="padding-left:0px;"><h5>${notifications[item].description}</h5></div><div class="col-6" style="padding-right:0px;"><p class="text-muted text-right">${notifications[item].timesince_format} ago</p></div></div></div><div class="sp-content" ><p class="sp-paragraph mb-0 text-justify ">${notifications[item].data.rel_obj_content}</p></div></div></a>`          
           );
-
+ 
+}
          }
           $( `#${elmId}`  ).replaceWith(`<a class="nav-link btn" id=${elmId} data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false"><i class="fa fa-bell "></i></a>`);
              $.ajax(
