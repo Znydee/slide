@@ -45,7 +45,7 @@
     </div>
 
 <div class="stream-posts container-fluid">
-{%for item in post reversed%}
+{%for item in page_obj%}
                     <div class="stream-post">
                         <div class="sp-author ">
                             <a href="#" class="sp-author-avatar"><img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt=""></a>
@@ -80,8 +80,13 @@
                         </div>
                     </div>
                     
- {%endfor%}
- </div>                    
+ {%endfor%} 
+ {% if page_obj.has_next %}
+                <p class="pagination">
+                    <a class="next-page" href="?page={{ page_obj.next_page_number }}">More...</a>
+                </p>
+            {% endif %}
+ </div>     
   </div>
   <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
       {% for item in friends_suggestion %}
@@ -135,14 +140,31 @@
 				</div>
 				<div class="dropdown-divider"></div>-->
   </div>
-  <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
+  <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+  <div class="list-group">
+  <a href="{% url 'profile' user.profile.slug%}" class="list-group-item">Profile</a>
+
+  <a href="{% url 'logout' %}" class="list-group-item">Logout</a>
+  
+</div>
+  </div>
 </div>
   <script type="text/javascript">
     $(document).ready(function(){
+    jQuery(function ($) {
+        var $list = $('.stream-posts');
+        $list.jscroll({            
+            padding: 100,
+            pagingSelector: '.pagination',
+            nextSelector: 'a.next-page:last',
+            contentSelector: '.stream-post,.pagination'
+        });
+    });
     $(document).on("click","#messages-tab",function(){
         var elmId = $(this).attr("id");
    //     var elmIdd = elmId.substring(2) ;
    //     alert(elmId);
+   $( "#notification_list" ).empty();
         $.ajax(
     {
         type:"GET",
@@ -255,7 +277,8 @@
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
+    <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jscroll/2.4.1/jquery.jscroll.min.js"></script>
 {% register_notify_callbacks callbacks='fill_notification_list,fill_notification_badge' %}
 </body>
 </html>

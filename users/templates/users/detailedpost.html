@@ -31,7 +31,7 @@
                 <img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="user" class="profile-photo-md pull-left">
                 <div class="post-detail">
                   <div class="user-info">
-                    <h5><a href="timeline.html" class="profile-link">{{post.user.username}}</a> <span class="following">following</span></h5>
+                    <h5><a href="timeline.html" class="profile-link">{{post.user.username}}</a></h5>
                     <p class="text-muted">posted {{post.date_posted | timesince}} ago</p>
                   </div>
                   <div class="reaction">
@@ -58,9 +58,9 @@
                   </div>
                   {%endfor%}
                   <div class="row">
-                     <div class="col-sm-1">
+                     <!--<div class="col-1">
                     <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="profile-photo-sm">
-                    </div>
+                    </div>-->
                    <!-- <input type="text" class="form-control" placeholder="Post a comment">-->
                    <div class="col t-area">
                    <form method="post">

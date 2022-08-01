@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'babel',
+    'phonenumber_field',
     'crispy_forms',
     'users.apps.UsersConfig',
     'django.contrib.admin',
