@@ -13,6 +13,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>   
+<div class="container-fluid" style="margin-top: 20px;">
+        <h1 class="text-center" style="background:#4267B2;  color: white">Slide</h1>
+</div>
 <div class="container-fluid">
 <div class="profile-wrapper">
     <div class="profile-section-user">
@@ -20,7 +23,10 @@
         <div class="profile-info-brief p-3"><img class="img-fluid user-profile-avatar" src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="">
             <div class="text-center">
                 <h5 class="text-uppercase mb-4">{{profiles_owner.username}}</h5>
-                <p class="text-muted fz-base">I'm John Doe a web developer and software engineer. I studied computer science and software engineering.</p>
+                <p class="text-muted fz-base">{{profiles_owner_bio.bio}}</p>
+            {%if user == profiles_owner %}
+                <a class="btn btn-outline-primary" href="{% url 'profileupdate' %}">EDIT PROFILE</a>
+            {%endif%}
             </div>
         </div>
         <!-- /.profile-info-brief -->
@@ -109,7 +115,56 @@
                     </div>
             {% endfor %}
             </div>
-            <div class="tab-pane fade" id="profile-comments" role="tabpanel" aria-labelledby="home-tab">comments</div>
+            <div class="tab-pane fade" id="profile-comments" role="tabpanel" aria-labelledby="home-tab">
+{% with profiles_owner_comments=profiles_owner.comments.all %}
+{%for item in profiles_owner_comments reversed%}
+<div class="p-3 mb-2 bg-light">
+    <div class="p-3 mb-2 bg-white text-dark">"{{item.comment_made}}"</div>
+            <div class="stream-post">
+                       
+                        <div class="sp-author ">
+                            <a href="#" class="sp-author-avatar"><img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt=""></a>
+                            <h6 class="sp-author-name"><a href="{% url 'profile' item.post.user.profile.slug%}">{{item.post.user.username}}</a></h6>
+                             {%if item.post in user_liked_post%}
+                            <a class="btn " id="li{{item.post.id}}"  style="color:#4267B2;"><i class="fa fa-thumbs-up "></i> {{item.post.likes.count}}</a>
+                            {%else%}
+                            <a class="btn " id="li{{item.post.id}}"><i class="fa fa-thumbs-up "></i> {{item.post.likes.count}}</a>
+                            {%endif%}
+                       {% if item.post|has_comment:request.user == "yes"%}
+                            <a class="btn " id="li{{item.post.id}}" style="color:#4267B2;"><i class="fa fa-comment " ></i> {{item.post.post_comments.count}}</a>
+                            {%else%}
+                                <a class="btn " id="li{{item.post.id}}"><i class="fa fa-comment "></i> {{item.post.post_comments.count}}</a>
+                            {% endif %}
+                            </div>
+                        <div class="sp-content" onclick="location.href='{% url 'detailed-post' item.post.user.profile.slug item.post.id%}'">
+                            <div class="sp-info">posted {{item.post.date_posted | timesince}} ago</div>
+                     
+                            <p class="sp-paragraph mb-0 text-justify ">{{item.post.post}}</p>
+                            
+                        </div>
+                        <!-- /.sp-content -->
+                        <div>
+                        {%if item.post in user_liked_post%}
+                            <button type="button" class="libtn btn btn-outline-primary" id="lk{{item.post.id}}">unlike</button>
+                         {%else%}
+                         <button type="button" class="libtn btn btn-outline-primary" id="lk{{item.post.id}}">like</button>
+                          {%endif%}
+                          
+                            <a href="{% url 'detailed-post' item.post.user.profile.slug item.post.id%}" class="btn btn-outline-primary">comment</a>
+                        </div>
+                        <!--commentssssss-
+                        <div class="sp-author ">
+                            <a href="#" class="sp-author-avatar"><img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt=""></a>
+                            <h6 class="sp-author-name"><a href="{% url 'profile' item.post.user.profile.slug%}">{{item.post.user.username}}</a></h6>
+                            
+                            <a class="btn " id="li{{item.post.id}}"  style="color:#4267B2;"><i class="fa fa-thumbs-up "></i> {{item.comment_made}}</a>                     
+                            </div>-->
+                             
+                    </div>
+                 </div>  
+{%endfor%}
+{%endwith%}
+</div>
             <div class="tab-pane fade" id="profile-requests" role="tabpanel" aria-labelledby="home-tab">
             {%for item in users_requests%}
     <div class="row">

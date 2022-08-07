@@ -30,7 +30,7 @@ class Comment(models.Model):
     post = models.ForeignKey(Posts,related_name="post_comments",on_delete=models.CASCADE)
     user= models.ForeignKey(User,on_delete=models.CASCADE,related_name="comments")
     comment_made = models.TextField(blank=False)
-    comment_time = models.            DateTimeField(auto_now_add=True)
+    comment_time = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f" {self.user.username} commented '{self.comment_made}' on {self.post}"
         

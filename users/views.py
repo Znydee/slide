@@ -90,6 +90,9 @@ def profile(request, slug):
     req_slug=slug
     user=get_object_or_404(User,username=req_slug)
     profiles_owner=user
+    profiles_owner_bio=get_object_or_404(Profile,user=profiles_owner)
+    #profiles_owner_comments=profiles_owner
+    #print(profiles_owner.comments.all())
 #    user=u.user
     friends=user.friends_list.all()
     posts=user.posts.all()
@@ -100,7 +103,7 @@ def profile(request, slug):
     for item in users_requests_recieved_from:
         users_requests_already_recieved.append(item.sent_from)     
     users_requests=FriendRequests.objects.filter(sent_from=request.user)|FriendRequests.objects.filter(sent_to=request.user).order_by("-time_sent")
-    return render(request,"users/profile.html",{"friends":friends,"profiles_owner":profiles_owner,"posts":posts,"auth_user_friends_users":auth_user_friends_users,"users_requests":users_requests,"users_requests_already_sent":users_requests_already_sent,"users_requests_already_recieved":users_requests_already_recieved,
+    return render(request,"users/profile.html",{"friends":friends,"profiles_owner":profiles_owner,"profiles_owner_bio":profiles_owner_bio,"posts":posts,"auth_user_friends_users":auth_user_friends_users,"users_requests":users_requests,"users_requests_already_sent":users_requests_already_sent,"users_requests_already_recieved":users_requests_already_recieved,
 "users_likes":users_likes,
 "user_liked_post":user_liked_post
 }
@@ -130,7 +133,6 @@ def like_post(request):
     det_post=get_object_or_404(Posts,id=id)         
     like_post=Like.objects.filter(post=det_post,user=request.user)
     request.user.notifications.filter(data={"rel_obj_content":det_post.post}).delete()
-    print("hiiii")
     if like_post:
         like_post.delete()
             
@@ -153,8 +155,6 @@ def send_friend_request(request):
     #pik=request.GET["id"]
     #print(pik)
     f_request=FriendRequests(sent_from=request.user,sent_to=user)
-    print(request.user)
-    print(user)
     f_request.save()
     return HttpResponse("done")
     
@@ -204,7 +204,7 @@ def profileupdate(request):
         form = ProfileUpdateForm(request.POST, instance = instance )
         if form.is_valid():
             form.save()
-            return redirect("slide-home")
+            return redirect("profile", slug=instance.user.username)
     else:
         form = ProfileUpdateForm(instance = instance )
     return render(request,"users/profileupdate.html", {"form":form})        
