@@ -22,7 +22,7 @@ class ProfileUpdateForm(forms.ModelForm):
         widgets = {
             'phone': PhoneNumberPrefixWidget(),
         }
-        fields=["image","bio","phone"]
+        fields=["profile_image","background_image","bio","phone"]
         
 
 class CommentForm(forms.ModelForm):

@@ -28,7 +28,7 @@
         <div class="col-md-12">
             <div class="post-content">            
               <div class="post-container">
-                <img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="user" class="profile-photo-md pull-left">
+                <img src="{{post.user.profile.profile_image.url}}" alt="user" class="profile-photo-md pull-left">
                 <div class="post-detail">
                   <div class="user-info">
                     <h5><a href="timeline.html" class="profile-link">{{post.user.username}}</a></h5>
@@ -53,7 +53,7 @@
                   <div class="line-divider"></div>
                   {%for item in comments%}
                   <div class="post-comment">
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" class="profile-photo-sm">
+                    <img src="{{item.user.profile.profile_image.url}}" alt="" class="profile-photo-sm">
                     <p><a href="timeline.html" class="profile-link">{{item.user.username}}   </a><i class="em em-laughing"></i>{{item.comment_made}}</p>
                   </div>
                   {%endfor%}

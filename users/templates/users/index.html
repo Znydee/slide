@@ -48,7 +48,7 @@
 {%for item in page_obj%}
                     <div class="stream-post">
                         <div class="sp-author ">
-                            <a href="#" class="sp-author-avatar"><img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt=""></a>
+                            <a href="#" class="sp-author-avatar"><img src="{{item.user.profile.profile_image.url}}" alt=""></a>
                             <h6 class="sp-author-name"><a href="{% url 'profile' item.user.profile.slug%}">{{item.user.username}}</a></h6>
                              {%if item in user_liked_post%}
                             <a class="btn " id="li{{item.id}}"  style="color:#4267B2;"><i class="fa fa-thumbs-up "></i> {{item.likes.count}}</a>
@@ -96,7 +96,7 @@
               <div class="nearby-user">
                 <div class="row">
                   <div class="col-md-2 col-sm-2">
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="user" class="profile-photo-lg">
+                    <img src="{{item.profile.profile_image.url}}" alt="user" class="profile-photo-lg">
                   </div>
                   <div class="col-md-4 col-sm-4">
                         <h5><a href="#" class="profile-link">{{item.username}}</a></h5>            <button class="sbtn btn-primary btn pull-left"  id="ad{{item.username}}">Add Friend</button>
@@ -201,7 +201,7 @@
     $(document).on("click",".sbtn",function(){
         var elmId = $(this).attr("id");
         var elmIdd = elmId.substring(2) ;
-        alert(elmIdd)
+     
         $.ajax(
     {
         type:"GET",
@@ -238,9 +238,9 @@
         var elmIdd = elmId.substring(2) ;
         var like_count = $(`#li${elmIdd}`).text() ;
           
-          alert() ;
+         
      //   var elmIddd = elmId.substring(1) ;
-        alert(elmId);
+     
         $.ajax(
     {
         type:"GET",
@@ -251,7 +251,7 @@
         success: function(data) 
         {
             if (data == "liked") {
-  alert("liked");
+ 
   like_count=Number(like_count) + 1;
   $( `#li${elmIdd}`).html(`<i class="fa fa-thumbs-up"></i> ${String(like_count)}`);
   $( `#li${elmIdd}`).css({
@@ -260,7 +260,7 @@
    $(`#${elmId}`).text("unlike") ;
    
 } else {
-  alert("not liked");
+  
   like_count=Number(like_count) - 1 ;
   $( `#li${elmIdd}`).html(`<i class="fa fa-thumbs-up"></i> ${String(like_count)}`);
   $(`#li${elmIdd}`).css({

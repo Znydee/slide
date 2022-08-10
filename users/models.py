@@ -7,7 +7,8 @@ from phonenumber_field.modelfields import PhoneNumberField
 class Profile(models.Model):
     user = models.OneToOneField(User ,on_delete = models.CASCADE)
     bio = models.TextField(blank=True)
-    image=models.ImageField(default="default.jpg" , upload_to="profile_pictures")
+    profile_image=models.ImageField(default="default.jpg" , upload_to="profile_pictures")
+    background_image=models.ImageField(default="default.jpg" , upload_to="profile_pictures")
     email= models.EmailField(blank=True)
     slug = AutoSlugField(populate_from='user',always_update=True)
     friends= models.ManyToManyField(User,related_name="friends_list", blank=True)

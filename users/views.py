@@ -34,16 +34,13 @@ def home(request):
     users_friends_user_list = []
     for friend in users_friends:
         users_friends_user_list.append(friend.user)
-    print(users_friends_user_list)
     for friend in users_friends:
         friends_friend = friend.friends.all()
-        #print(friend,friends_friend)
         for f in friends_friend:
             if f in users_friends_user_list or f == request.user or FriendRequests.objects.filter(sent_from=request.user,sent_to=f):
                 pass
             else:
                 friends_suggestion.append(f)
-    print(friends_suggestion)
     return render(request,"users/index.html",{"page_obj":page_obj,"form":form,"user_liked_post":user_liked_post,"friends_suggestion":friends_suggestion})
 
 def get_all_notifications(request):
@@ -91,9 +88,6 @@ def profile(request, slug):
     user=get_object_or_404(User,username=req_slug)
     profiles_owner=user
     profiles_owner_bio=get_object_or_404(Profile,user=profiles_owner)
-    #profiles_owner_comments=profiles_owner
-    #print(profiles_owner.comments.all())
-#    user=u.user
     friends=user.friends_list.all()
     posts=user.posts.all()
     users_requests_sent_to=FriendRequests.objects.filter(sent_from=request.user)
@@ -198,11 +192,11 @@ def register(request):
         form=UserRegisterForm()            
     return render(request,"users/register.html", {"form":form})
     
-def profileupdate(request):
-    instance=  Profile.objects.filter(user=request.user).first()    
+def profileupdate(request):        
+    instance=  Profile.objects.filter(user=request.user).first()
     if request.method=="POST":        
-        form = ProfileUpdateForm(request.POST, instance = instance )
-        if form.is_valid():
+        form = ProfileUpdateForm(request.POST, request.FILES, instance = instance )
+        if form.is_valid():            
             form.save()
             return redirect("profile", slug=instance.user.username)
     else:

@@ -19,8 +19,8 @@
 <div class="container-fluid">
 <div class="profile-wrapper">
     <div class="profile-section-user">
-        <div class="profile-cover-img"><img src="{{user.profile.image.url}}" alt=""></div>
-        <div class="profile-info-brief p-3"><img class="img-fluid user-profile-avatar" src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="">
+        <div class="profile-cover-img"><img src="{{user.profile.background_image.url}}" alt=""></div>
+        <div class="profile-info-brief p-3"><img class="border border-white img-fluid user-profile-avatar" src="{{user.profile.profile_image.url}}" alt="">
             <div class="text-center">
                 <h5 class="text-uppercase mb-4">{{profiles_owner.username}}</h5>
                 <p class="text-muted fz-base">{{profiles_owner_bio.bio}}</p>
@@ -52,7 +52,7 @@
                         <tr>
                             <td><strong>PHONE:</strong></td>
                             <td>
-                                <p class="text-muted mb-0">07034599042</p>
+                                <p class="text-muted mb-0">{{profiles_owner_bio.phone}}</p>
                             </td>
                         </tr>
                     </tbody>
@@ -83,7 +83,7 @@
             {% for item in users_likes %}
             <div class="stream-post">
                         <div class="sp-author ">
-                            <a href="#" class="sp-author-avatar"><img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt=""></a>
+                            <a href="#" class="sp-author-avatar"><img src="{{item.post.user.profile.profile_image.url}}" alt=""></a>
                             <h6 class="sp-author-name"><a href="{% url 'profile' item.post.user.profile.slug%}">{{item.post.user.username}}</a></h6>
                              {%if item.post in user_liked_post%}
                             <a class="btn " id="li{{item.post.id}}"  style="color:#4267B2;"><i class="fa fa-thumbs-up "></i> {{item.post.likes.count}}</a>
@@ -123,7 +123,7 @@
             <div class="stream-post">
                        
                         <div class="sp-author ">
-                            <a href="#" class="sp-author-avatar"><img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt=""></a>
+                            <a href="#" class="sp-author-avatar"><img src="{{item.post.user.profile.profile_image.url}}" alt=""></a>
                             <h6 class="sp-author-name"><a href="{% url 'profile' item.post.user.profile.slug%}">{{item.post.user.username}}</a></h6>
                              {%if item.post in user_liked_post%}
                             <a class="btn " id="li{{item.post.id}}"  style="color:#4267B2;"><i class="fa fa-thumbs-up "></i> {{item.post.likes.count}}</a>
@@ -173,7 +173,7 @@
               <div class="nearby-user">
                 <div class="row">
                   <div class="col-md-2 col-sm-2">
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="user" class="profile-photo-lg">
+                    <img src="{{item.user.profile.profile_image.url}}" alt="user" class="profile-photo-lg">
                   </div>
                   <div class="col-md-4 col-sm-4">
                     {% if item.sent_from == user%}
@@ -208,7 +208,7 @@
               <div class="nearby-user">
                 <div class="row">
                   <div class="col-md-2 col-sm-2">
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="user" class="profile-photo-lg">
+                    <img src="{{item.user.profile.profile_image.url}}" alt="user" class="profile-photo-lg">
                   </div>
                   <div class="col-md-4 col-sm-4">
                     <h5><a href="{% url 'profile' item.user.profile.slug%}" class="profile-link">{{item.user.username}}</a></h5>                                        
@@ -247,7 +247,7 @@
 {%for item in posts%}
                    <div class="stream-post">
                         <div class="sp-author ">
-                            <a href="#" class="sp-author-avatar"><img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt=""></a>
+                            <a href="#" class="sp-author-avatar"><img src="{{item.user.profile.profile_image.url}}" alt=""></a>
                             <h6 class="sp-author-name"><a href="{% url 'profile' item.user.profile.slug%}">{{item.user.username}}</a></h6>
                              {%if item in user_liked_post%}
                             <a class="btn " id="li{{item.id}}"  style="color:#4267B2;"><i class="fa fa-thumbs-up "></i> {{item.likes.count}}</a>
