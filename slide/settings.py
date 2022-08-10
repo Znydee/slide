@@ -144,4 +144,4 @@ EMAIL_HOST =  "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "farouz98@gmail.com"
-EMAIL_HOST_PASSWORD = "gfefprobjejwxqfq"
+EMAIL_HOST_PASSWORD = 
