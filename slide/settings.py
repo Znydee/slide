@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
+    'chat',
     'babel',
     'phonenumber_field',
     'crispy_forms',
@@ -126,7 +128,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
+ASGI_APPLICATION = 'slide.asgi.application'
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media') 
 
 MEDIA_URL = 'media/'
@@ -144,4 +146,17 @@ EMAIL_HOST =  "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "farouz98@gmail.com"
+<<<<<<< HEAD
 EMAIL_HOST_PASSWORD = 
+=======
+EMAIL_HOST_PASSWORD = ""
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+>>>>>>> 09d6fee (implementing realtime chatapp)

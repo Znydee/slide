@@ -1,0 +1,438 @@
+{%load static%}
+{% load notifications_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body{
+    background-color: #f4f7f6;
+    margin-top:20px;
+}
+.card {
+    background: #fff;
+    transition: .5s;
+    border: 0;
+    margin-bottom: 30px;
+    border-radius: .55rem;
+    position: relative;
+    width: 100%;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
+}
+.chat-app .people-list {
+    width: 280px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 20px;
+    z-index: 7
+}
+
+.chat-app .chat {
+    margin-left: 280px;
+    border-left: 1px solid #eaeaea
+}
+
+.people-list {
+    -moz-transition: .5s;
+    -o-transition: .5s;
+    -webkit-transition: .5s;
+    transition: .5s
+}
+
+.people-list .chat-list li {
+    padding: 10px 15px;
+    list-style: none;
+    border-radius: 3px
+}
+
+.people-list .chat-list li:hover {
+    background: #efefef;
+    cursor: pointer
+}
+
+.people-list .chat-list li.active {
+    background: #efefef
+}
+
+.people-list .chat-list li .name {
+    font-size: 15px
+}
+
+.people-list .chat-list img {
+    width: 45px;
+    border-radius: 50%
+}
+
+.people-list img {
+    float: left;
+    border-radius: 50%
+}
+
+.people-list .about {
+    float: left;
+    padding-left: 8px
+}
+
+.people-list .status {
+    color: #999;
+    font-size: 13px
+}
+
+.chat .chat-header {
+    padding: 15px 20px;
+    border-bottom: 2px solid #f4f7f6
+}
+
+.chat .chat-header img {
+    float: left;
+    border-radius: 40px;
+    width: 40px
+}
+
+.chat .chat-header .chat-about {
+    float: left;
+    padding-left: 10px
+}
+
+.chat .chat-history {
+    padding: 20px;
+    border-bottom: 2px solid #fff
+}
+
+.chat .chat-history ul {
+    padding: 0
+}
+
+.chat .chat-history ul li {
+    list-style: none;
+    margin-bottom: 30px
+}
+
+.chat .chat-history ul li:last-child {
+    margin-bottom: 0px
+}
+
+.chat .chat-history .message-data {
+    margin-bottom: 15px
+}
+
+.chat .chat-history .message-data img {
+    border-radius: 40px;
+    width: 40px
+}
+
+.chat .chat-history .message-data-time {
+    color: #434651;
+    padding-left: 6px
+}
+
+.chat .chat-history .message {
+    color: #444;
+    padding: 18px 20px;
+    line-height: 26px;
+    font-size: 16px;
+    border-radius: 7px;
+    display: inline-block;
+    position: relative
+}
+
+.chat .chat-history .message:after {
+    bottom: 100%;
+    left: 7%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-bottom-color: #fff;
+    border-width: 10px;
+    margin-left: -10px
+}
+
+.chat .chat-history .my-message {
+    background: #efefef
+}
+
+.chat .chat-history .my-message:after {
+    bottom: 100%;
+    left: 30px;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-bottom-color: #efefef;
+    border-width: 10px;
+    margin-left: -10px
+}
+
+.chat .chat-history .other-message {
+    background: #e8f1f3;
+    text-align: right
+}
+
+.chat .chat-history .other-message:after {
+    border-bottom-color: #e8f1f3;
+    left: 93%
+}
+
+.chat .chat-message {
+    padding: 20px
+}
+
+.online,
+.offline,
+.me {
+    margin-right: 2px;
+    font-size: 8px;
+    vertical-align: middle
+}
+
+.online {
+    color: #86c541
+}
+
+.offline {
+    color: #e47297
+}
+
+.me {
+    color: #1d8ecd
+}
+
+.float-right {
+    float: right
+}
+
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0
+}
+
+@media only screen and (max-width: 767px) {
+    .chat-app .people-list {
+        height: 465px;
+        width: 100%;
+        overflow-x: auto;
+        background: #fff;
+        left: -400px;
+        display: none
+    }
+    .chat-app .people-list.open {
+        left: 0
+    }
+    .chat-app .chat {
+        margin: 0
+    }
+    .chat-app .chat .chat-header {
+        border-radius: 0.55rem 0.55rem 0 0
+    }
+    .chat-app .chat-history {
+        height: 300px;
+        overflow-x: auto
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+    .chat-app .chat-list {
+        height: 650px;
+        overflow-x: auto
+    }
+    .chat-app .chat-history {
+        height: 600px;
+        overflow-x: auto
+    }
+}
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+    .chat-app .chat-list {
+        height: 480px;
+        overflow-x: auto
+    }
+    .chat-app .chat-history {
+        height: calc(100vh - 350px);
+        overflow-x: auto
+    }
+}
+</style>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.0/jquery.timeago.min.js" integrity="sha512-4g1PvFI8aR8IYr3mnvKJpjkarHtqNstmP/teCXWyMZImLPOJ+uK01Co6UnMCMtD12I4N3zQUNSJ3EVJpbwhQmw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+<!--<nav class="navbar navbar-light bg-light mt-3">
+  <a class="navbar-brand" href="#"><h1>Znydee's Chatapp</h1></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link text-center" href="{% url 'logout'%}">Logout<span class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+  </div>
+</nav>-->
+<!-- <div >
+  <h1 class="text-center">Znydee's Chatapp</h1>
+  </div>-->
+  <div class="container-fluid" style="margin-top: 20px;">
+        <h1 class="text-center" style="background:#4267B2;  color: white">Slide</h1>
+</div>
+<div class="container-fluid">
+<div class="row clearfix">
+    <div class="col-lg-12">
+        <div class="card chat-app">
+            <div id="plist" class="people-list">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-search"></i></span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Search...">
+                </div>
+                
+                <ul class="list-unstyled chat-list mt-2 mb-0">
+                {%for item in people%}
+                {%if item.username != user.username%}
+                    <li class="clearfix clearfix1" id={{item.username}}  name={{item.username}}>
+                        <img src="https://i0.wp.com/ifpo.org.uk/wp-content/uploads/2020/10/cropped-9-93879_computer-icons-user-image-person-silhouette-user-silhouettes-5.png" alt="avatar">
+                        <div class="about">
+                            <div class="name" >{{item.username}}</div>                                           
+                        </div>
+                      <span class="badge badge-dark ml-3"></span>
+                    </li>
+                 {%endif%}
+                {%endfor%}
+              </ul>
+            </div>
+            <div class="chat">
+                <div class="chat-header clearfix">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                                <img src="https://i0.wp.com/ifpo.org.uk/wp-content/uploads/2020/10/cropped-9-93879_computer-icons-user-image-person-silhouette-user-silhouettes-5.png" alt="avatar">
+                            </a>
+                            <div class="chat-about">
+                                <h6 class="m-b-0 nn">Aiden Chavez</h6>
+                                <small>Last seen: 2 hours ago</small>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="chat-history">
+                    <ul class="m-b-0 chat-history-list">
+                    </ul>
+                </div>
+                <div class="chat-message clearfix">
+                    <div class="input-group mb-0">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text btn " id="send-msg"><i class="fa fa-send"></i></span>
+                        </div>
+                        <input type="text" class="form-control" id="message" placeholder="Enter text here...">                                    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script src="{% static 'chat/notify.js' %}" type="text/javascript"></script>
+{% register_notify_callbacks callbacks='fill_notification_badge,my_special_notification_callback' %}
+<script type="text/javascript">
+var websocket_list = [];
+$(document).ready(function(){       
+    
+    $("#znydee44").trigger('click'); 
+
+});
+
+$(".clearfix1").click(function(){
+myFunction.call(this);
+});
+function myFunction(){
+$(".badge-dark").text("");
+for(let item in websocket_list){websocket_list[item].close();};
+$(".clearfix1").removeClass("active");
+$(this).addClass("active");
+var ins=$(this).attr("name");
+var ins2 = '{{user.username}}';
+var ins_list = [ins,ins2];
+//alert(ins_list);
+var ins_list = ins_list.sort();
+var roomname = ins_list[0] + ins_list[1];
+var url = 'ws://' + window.location.host + '/ws/'+roomname+'/';        
+var chatSocket =  new WebSocket(url);
+websocket_list.push(chatSocket);
+$(".chat-history-list").empty();
+$.ajax({
+      type:'GET',
+      url:"{% url 'getmessage' %}",
+      data:{
+          username:ins,
+      },
+      success: function(data){
+         var data = data["messages"];
+         for (let item in data){
+         if (data[item].sender_id == '{{user.id}}') {
+         $(".chat-history-list").append(`<li class="clearfix"><div class="message-data"><time class="message-data-time timeago" datetime="${data[item].timestamp}"></time></div><div class="message my-message">${data[item].content}</div></li>`);}else{$(".chat-history-list").append(`<li class="clearfix"><div class="message-data text-right"> <time class="message-data-time timeago" datetime="${data[item].timestamp}"></time><img src="https://i0.wp.com/ifpo.org.uk/wp-content/uploads/2020/10/cropped-9-93879_computer-icons-user-image-person-silhouette-user-silhouettes-5.png" alt="avatar"></div><div class="message other-message float-right">${data[item].content}</div> </li>`);}
+         };
+         jQuery(".timeago").timeago();
+         
+      }
+    }) ;
+    $.ajax({
+      type:'POST',
+      url:"{% url 'message_as_read' %}",
+      data:{
+          sender:ins,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+      },
+      success: function(data){
+      
+      }
+    }) ;
+    chatSocket.onmessage = function(e) {
+            var data = JSON.parse(e.data);
+            var time_ag= new  Date().toISOString();
+             
+                if (data.sender == '{{user.username}}') {$(".chat-history-list").append(`<li class="clearfix"><div class="message-data"><time class="message-data-time timeago" datetime="${time_ag}"></time></div><div class="message my-message">${data.message}</div></li>`);$('#message').val("");}else{$(".chat-history-list").append(`<li class="clearfix"><div class="message-data text-right"> <time class="message-data-time timeago" datetime="${time_ag}"></time><img src="https://i0.wp.com/ifpo.org.uk/wp-content/uploads/2020/10/cropped-9-93879_computer-icons-user-image-person-silhouette-user-silhouettes-5.png" alt="avatar"></div><div class="message other-message float-right">${data.message}</div> </li>`);$('#message').val("");}
+            jQuery(".timeago").timeago();
+        };
+    chatSocket.onclose = function(e)
+ {
+    console.error('Chat socket closed unexpectedly');
+  };
+$(".nn").text(ins);
+
+$("#send-msg").click(function(e){
+  alert("message about to be sent");
+  var message = $('#message').val();
+  var sender = '{{user.username}}';
+  var reciever = $(".nn").text();
+  chatSocket.send(JSON.stringify({
+                  'sender': sender,
+                'message': message,
+                'reciever':reciever
+            }));
+        //alert(message);
+       //alert("message sent");
+  });
+  
+}
+</script>
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jscroll/2.4.1/jquery.jscroll.min.js"></script>
+</body>
+</html>

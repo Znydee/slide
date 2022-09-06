@@ -360,3 +360,7 @@ body.menubar-top .profile-wrapper {
   width: 80px;
   border-radius: 50%;
 }
+
+#chicon, #chicon:visited, #chicon:hover, #chicon:active {
+  color: inherit;
+}

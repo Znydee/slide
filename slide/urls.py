@@ -18,12 +18,15 @@ from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 from users.views import register,send_friend_request,cancel_friend_request,accept_friend_request, decline_friend_request,like_post,notifications_as_read,get_all_notifications,profileupdate
+from chat.views import register,mark_specific_as_read
 from django.contrib.auth import views as auth_views
 import notifications.urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('users.urls')),
+     path('chat', include('chat.urls')),
     path('login/',auth_views.LoginView.as_view(template_name="users/login.html"),name="login"),
+    
     path('logout',auth_views.LogoutView.as_view(template_name="users/logout.html"),name="logout"),
     path('profileupdate/',profileupdate,name="profileupdate" ),
     path('register',register,name="register"),
@@ -39,6 +42,7 @@ urlpatterns = [
     path("password-reset/done",auth_views.PasswordResetDoneView.as_view(template_name="users/password_reset_done.html") , name="password_reset_done"),
     path("password-reset-confirm/<uidb64>/<token>",auth_views.PasswordResetConfirmView.as_view(template_name="users/password_reset_confirm.html") , name="password_reset_confirm"),
     path("password-reset-complete/",auth_views.PasswordResetCompleteView.as_view(template_name="users/password_reset_complete.html") , name="password_reset_complete"),
+    path('mark_specific_as_read',mark_specific_as_read,name="message_as_read"),
 ]
 
 if settings.DEBUG:
