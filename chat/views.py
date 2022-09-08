@@ -18,6 +18,7 @@ def get_message(request):
     messages = Message.objects.filter(sender=request.user, reciever = ins)|Message.objects.filter(reciever=request.user, sender = ins)
     messages = messages.order_by("timestamp")
     messages=list(messages.values())
+    Notification.objects.filter(actor_object_id=ins.id, recipient=request.user,verb="new message").mark_all_as_read()
     return JsonResponse({"messages": messages})
     
 def register(request):    
@@ -37,7 +38,7 @@ def mark_specific_as_read(request):
     n=Notification.objects.filter(actor_object_id = sender,recipient=reciever)
     n.mark_all_as_read() 
     n.delete()
-    print(sender)
-    print(reciever)
-    print(n)
+   # print(sender)
+#    print(reciever)
+#    print(n)
     return HttpResponse("done")

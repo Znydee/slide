@@ -25,7 +25,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         reciever = User.objects.get(username=reciever)
         new_msg = Message.objects.create(sender=sender, reciever=reciever, content=msg)
         new_msg.save()
-        notify.send(sender, recipient=reciever, verb='you reached level 10')
+        notify.send(sender, recipient=reciever, verb='new message')
 
     async def disconnect(self, close_code):
         # Leave room group

@@ -262,7 +262,7 @@ body{
 }
 </style>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.0/jquery.timeago.min.js" integrity="sha512-4g1PvFI8aR8IYr3mnvKJpjkarHtqNstmP/teCXWyMZImLPOJ+uK01Co6UnMCMtD12I4N3zQUNSJ3EVJpbwhQmw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -287,6 +287,7 @@ body{
   <div class="container-fluid" style="margin-top: 20px;">
         <h1 class="text-center" style="background:#4267B2;  color: white">Slide</h1>
 </div>
+
 <div class="container-fluid">
 <div class="row clearfix">
     <div class="col-lg-12">
@@ -321,14 +322,19 @@ body{
                                 <img src="https://i0.wp.com/ifpo.org.uk/wp-content/uploads/2020/10/cropped-9-93879_computer-icons-user-image-person-silhouette-user-silhouettes-5.png" alt="avatar">
                             </a>
                             <div class="chat-about">
-                                <h6 class="m-b-0 nn">Aiden Chavez</h6>
-                                <small>Last seen: 2 hours ago</small>
+                                <h6 class="m-b-0 nn"></h6>
+                                <small></small>
                             </div>
                         </div>
                         
                     </div>
                 </div>
                 <div class="chat-history">
+                    <div class="text-center spin">
+
+
+
+</div>
                     <ul class="m-b-0 chat-history-list">
                     </ul>
                 </div>
@@ -359,6 +365,7 @@ $(".clearfix1").click(function(){
 myFunction.call(this);
 });
 function myFunction(){
+$(".spin").append('<div class="spinner-border" role="status"></div>');
 $(".badge-dark").text("");
 for(let item in websocket_list){websocket_list[item].close();};
 $(".clearfix1").removeClass("active");
@@ -381,6 +388,7 @@ $.ajax({
       },
       success: function(data){
          var data = data["messages"];
+         $(".spin").empty();
          for (let item in data){
          if (data[item].sender_id == '{{user.id}}') {
          $(".chat-history-list").append(`<li class="clearfix"><div class="message-data"><time class="message-data-time timeago" datetime="${data[item].timestamp}"></time></div><div class="message my-message">${data[item].content}</div></li>`);}else{$(".chat-history-list").append(`<li class="clearfix"><div class="message-data text-right"> <time class="message-data-time timeago" datetime="${data[item].timestamp}"></time><img src="https://i0.wp.com/ifpo.org.uk/wp-content/uploads/2020/10/cropped-9-93879_computer-icons-user-image-person-silhouette-user-silhouettes-5.png" alt="avatar"></div><div class="message other-message float-right">${data[item].content}</div> </li>`);}
@@ -414,7 +422,7 @@ $.ajax({
 $(".nn").text(ins);
 
 $("#send-msg").click(function(e){
-  alert("message about to be sent");
+  //alert("message about to be sent");
   var message = $('#message').val();
   var sender = '{{user.username}}';
   var reciever = $(".nn").text();

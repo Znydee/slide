@@ -15,7 +15,13 @@ def home(request):
         form=PostForm(request.POST)
         if form.is_valid():
             form.instance.user=request.user 
+            reciever_list=[]
+            sender = request.user
+            reciever = list(request.user.friends_list.all().values("user_id"))  
+            for item in reciever:
+                reciever_list.append((User.objects.get(id=item['user_id'])))                        
             form.save()
+            notify.send(sender, recipient=reciever_list, verb='new post')
             return redirect("slide-home")
     else:
         form=PostForm()              
@@ -52,7 +58,10 @@ def get_all_notifications(request):
     return JsonResponse(all_notifications, safe=False)
 
 def notifications_as_read(request):
-    request.user.notifications.mark_all_as_read()       
+    #print(request.user.notifications.all())
+    notif = request.user.notifications.exclude(verb="new message")&request.user.notifications.exclude(verb="new post")
+    print(notif)
+    notif.mark_all_as_read()       
     return HttpResponse("done")
 def detailedpost(request,slug,id):
     det_post=get_object_or_404(Posts,pk=id)

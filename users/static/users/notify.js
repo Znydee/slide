@@ -84,25 +84,27 @@ function fetch_api_data() {
 }
 
 function my_special_notification_callback(data) {
- //$(".badge-dark").text("");
+//alert("testing live notification");
+var notification_list = data.unread_list
+//alert(JSON.stringify(notification_list));
 
-   //$(".alert-success").remove();
-   //alert(data.unread_list);
-   alert("yes");
-   if(data.unread_list.length > 0){
-   var notification_list = data.unread_list;
-       for(let item in notification_list){
-  alert(JSON.stringify(notification_list[item]));
+for(let item in notification_list){
+  //alert(JSON.stringify(notification_list[item]));
   if(notification_list[item].verb == "new message"){
-  if ($(".alert-success")[0]){}else{$("<div class='alert alert-success mt-3'>new message</div>").insertBefore(".list-unstyled");};
+  if($(".msg-circle")[0]){}else{
+  $(".fa-envelope").append('<sup><i class="fa fa-circle msg-circle" aria-hidden="true"></i></sup>');
   }
-  }                
-     }
-  else{$(".alert-success").remove();};
-       for (let item in data.unread_list){
-                    targ = data.unread_list[item].actor;    
-                    $(`li#${data.unread_list[item].actor} > span`).text("new")
-                };
+  }
+  else if(notification_list[item].verb == "new post"){
+  //alert("new pos");
+  if($(".fd-circle")[0]){}else{
+  $("#home-tab").append('<sup><i class="fa fa-circle fd-circle" aria-hidden="true"></i></sup>');}
+  }
+  else{
+  if($(".ntf-circle")[0]){}else{
+  $("#messages-tab").append('<sup><i class="fa fa-circle ntf-circle" aria-hidden="true"></i></sup>');}
+  }
+}
 };
 
 setTimeout(fetch_api_data, 1000);

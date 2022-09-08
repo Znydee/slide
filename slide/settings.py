@@ -146,9 +146,9 @@ EMAIL_HOST =  "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "farouz98@gmail.com"
-<<<<<<< HEAD
-EMAIL_HOST_PASSWORD = 
-=======
+#<<<<<<< HEAD
+#EMAIL_HOST_PASSWORD = 
+#=======
 EMAIL_HOST_PASSWORD = ""
 
 CHANNEL_LAYERS = {
@@ -159,4 +159,4 @@ CHANNEL_LAYERS = {
         },
     },
 }
->>>>>>> 09d6fee (implementing realtime chatapp)
+#>>>>>>> 09d6fee (implementing realtime chatapp)
