@@ -88,21 +88,19 @@ function my_special_notification_callback(data) {
 
    //$(".alert-success").remove();
    //alert(data.unread_list);
-   alert("yes");
+ //  alert("yes");
    if(data.unread_list.length > 0){
    var notification_list = data.unread_list;
        for(let item in notification_list){
-  alert(JSON.stringify(notification_list[item]));
+//  alert(JSON.stringify(notification_list[item]));
   if(notification_list[item].verb == "new message"){
+  $(`li#${data.unread_list[item].actor} > span`).text("new")
   if ($(".alert-success")[0]){}else{$("<div class='alert alert-success mt-3'>new message</div>").insertBefore(".list-unstyled");};
   }
   }                
      }
   else{$(".alert-success").remove();};
-       for (let item in data.unread_list){
-                    targ = data.unread_list[item].actor;    
-                    $(`li#${data.unread_list[item].actor} > span`).text("new")
-                };
+   
 };
 
 setTimeout(fetch_api_data, 1000);

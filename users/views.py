@@ -26,10 +26,11 @@ def home(request):
     else:
         form=PostForm()              
     user_liked_post = []
-    posts= Posts.objects.all().order_by("-pk")
-    paginator = Paginator(posts, 5,orphans=4)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    #posts= Posts.objects.all().order_by("-pk")
+    
+    #paginator = Paginator(posts, 5,orphans=4)
+#    page_number = request.GET.get('page')
+#    page_obj = paginator.get_page(page_number)
     user_likes=Like.objects.filter(user=request.user)
     for item in user_likes:
         user_liked_post.append(item.post)
@@ -37,17 +38,41 @@ def home(request):
     all_users= User.objects.all()
     friend_requests_sent= FriendRequests.objects.filter(sent_from=request.user)
     users_friends= request.user.friends_list.exclude(user=request.user)
-    users_friends_user_list = []
+    users_friends_user_list = [request.user.username]
+    users_friends_user_id_list = [request.user.id]
+    friend_suggestion_list=[]
     for friend in users_friends:
-        users_friends_user_list.append(friend.user)
-    for friend in users_friends:
-        friends_friend = friend.friends.all()
-        for f in friends_friend:
-            if f in users_friends_user_list or f == request.user or FriendRequests.objects.filter(sent_from=request.user,sent_to=f):
-                pass
-            else:
-                friends_suggestion.append(f)
-    return render(request,"users/index.html",{"page_obj":page_obj,"form":form,"user_liked_post":user_liked_post,"friends_suggestion":friends_suggestion})
+        users_friends_user_list.append(friend.user.username)
+        users_friends_user_id_list.append(friend.user.id)
+    friends_suggestion= User.objects.exclude(username__in=users_friends_user_list)
+    users_requests_already_sent=[]
+    users_requests_already_recieved=[]
+    users_requests_sent_to=FriendRequests.objects.filter(sent_from=request.user)
+    users_requests_recieved_from=FriendRequests.objects.filter(sent_to=request.user)
+    for item in users_requests_sent_to:
+        users_requests_already_sent.append(item.sent_to)
+    for item in users_requests_recieved_from:
+        users_requests_already_recieved.append(item.sent_from)     
+    users_requests=FriendRequests.objects.filter(sent_from=request.user)|FriendRequests.objects.filter(sent_to=request.user).order_by("-time_sent")
+    print(users_friends_user_id_list)
+    posts = Posts.objects.filter(user_id__in = users_friends_user_id_list).order_by("-date_posted")
+    print(posts.count())
+    paginator = Paginator(posts,10,orphans=4)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    #for item in all_users:
+#        if item in users_friends_user_list :
+#            all_users.exclude(item)
+#    friends_suggestion= all_users
+    
+#    for friend in users_friends:
+#        friends_friend = friend.friends.all()
+#        for f in friends_friend:
+#            if f in users_friends_user_list or f == request.user or FriendRequests.objects.filter(sent_from=request.user,sent_to=f):
+#                pass
+#            else:
+#                friends_suggestion.append(f)
+    return render(request,"users/index.html",{"page_obj":page_obj,"form":form,"user_liked_post":user_liked_post,"friends_suggestion":friends_suggestion,"users_requests":users_requests,"users_requests_already_sent":users_requests_already_sent,"users_requests_already_recieved":users_requests_already_recieved})
 
 def get_all_notifications(request):
     all_notifications=request.user.notifications.all()
@@ -60,7 +85,7 @@ def get_all_notifications(request):
 def notifications_as_read(request):
     #print(request.user.notifications.all())
     notif = request.user.notifications.exclude(verb="new message")&request.user.notifications.exclude(verb="new post")
-    print(notif)
+    #print(notif)
     notif.mark_all_as_read()       
     return HttpResponse("done")
 def detailedpost(request,slug,id):
@@ -196,6 +221,10 @@ def register(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             form.save()
+            users_name = request.POST["username"]
+            users_email=request.POST["email"]
+            user_obj= User.objects.get(username= users_name)
+            Profile.objects.create(user=user_obj,email=users_email)
             return redirect("login")
     else:
         form=UserRegisterForm()            

@@ -88,7 +88,7 @@
  {%endfor%} 
  {% if page_obj.has_next %}
                 <p class="pagination">
-                    <a class="next-page" href="?page={{ page_obj.next_page_number }}">More...</a>
+                    <a class="next-page" href="?page={{ page_obj.next_page_number }}"></a>
                 </p>
             {% endif %}
  </div>     
@@ -104,7 +104,15 @@
                     <img src="{{item.profile.profile_image.url}}" alt="user" class="profile-photo-lg">
                   </div>
                   <div class="col-md-4 col-sm-4">
-                        <h5><a href="#" class="profile-link">{{item.username}}</a></h5>            <button class="sbtn btn-primary btn pull-left"  id="ad{{item.username}}">Add Friend</button>
+                        <h5><a href="#" class="profile-link">{{item.username}}</a></h5>         
+                        {% if item in users_requests_already_sent%}
+                        <button class="cbtn btn-outline-danger btn pull-left" id="c1{{item.username}}">Cancel request</button>                              
+                          {%elif item in users_requests_already_recieved %}
+                          <button class="abtn btn-success btn pull-left" id="a1{{item.username}}">Accept</button>
+                    <button class="dbtn btn-danger btn pull-right " id="d1{{item.username}}">Decline</button>
+                            {%else%}
+                           <button class="sbtn btn-primary btn pull-left"  id="ad{{item.username}}">Add Friend</button>
+                          {% endif %}
                   </div>
                 </div>
               </div>
@@ -115,6 +123,8 @@
   </div>
   <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab"> 
 <!--  {%live_notify_list%}-->
+<div class="text-center spin">
+</div>
 <div class="list-group" id="notification_list">
       <!--{% for notification in  user.notifications.all %}
    <a href="#" class="list-group-item list-group-item-action">
@@ -159,6 +169,7 @@
     jQuery(function ($) {
         var $list = $('.stream-posts');
         $list.jscroll({            
+            loadingHtml: '<div class="text-center mb-3"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>',
             padding: 100,
             pagingSelector: '.pagination',
             nextSelector: 'a.next-page:last',
@@ -166,6 +177,7 @@
         });
     });
     $(document).on("click","#messages-tab",function(){
+        $(".spin").append('<div class="spinner-border" role="status"></div>');
         var elmId = $(this).attr("id");
    //     var elmIdd = elmId.substring(2) ;
    //     alert(elmId);
@@ -177,6 +189,7 @@
         dataType: 'json',
         success: function(data1) 
         {
+          $(".spin").empty();
        //     var string = "{{user.notifications.all | safe}}";
            // alert("ajax1 completed");
             var notifications= data1;
@@ -224,10 +237,49 @@
         }
      })        
     });
+    $(document).on("click",".dbtn",function(){
+        var elmId = $(this).attr("id");
+        var elmIdd = elmId.substring(2) ;
+        var elmIddd = elmId.substring(1) ;
+        
+        $.ajax(
+    {
+        type:"GET",
+        url: "{% url 'decline-request' %}",
+        data:{
+                 username: elmIdd,             
+        },
+        success: function() 
+        {
+            $( `#${elmId}`  ).replaceWith(`<h6 class="mb-3 text-danger">Request Declined</h6>`)
+            $( `#a${elmIddd}`  ).remove()
+
+        }
+     })        
+    });
+    $(document).on("click",".abtn",function(){
+        var elmId = $(this).attr("id");
+        var elmIdd = elmId.substring(2) ;
+        var elmIddd = elmId.substring(1) ;
+        
+        $.ajax(
+    {
+        type:"GET",
+        url: "{% url 'accept-request' %}",
+        data:{
+                 username: elmIdd,             
+        },
+        success: function() 
+        {
+            $( `#${elmId}`  ).replaceWith(`<h6 class="mb-3 text-success">Request Accepted</h6>`)
+            $( `#d${elmIddd}`  ).remove()
+        }
+     })        
+    });
     $(document).on("click",".cbtn",function(){
       var elmId = $(this).attr("id");
       var elmIdd = elmId.substring(2) ;
-        alert(elmIdd)
+        
         $.ajax(
     {
         type:"GET",

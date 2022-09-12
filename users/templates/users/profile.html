@@ -173,7 +173,7 @@
               <div class="nearby-user">
                 <div class="row">
                   <div class="col-md-2 col-sm-2">
-                    <img src="{{item.user.profile.profile_image.url}}" alt="user" class="profile-photo-lg">
+                    <img src="{{item.sent_to.profile.profile_image.url}}" alt="user" class="profile-photo-lg">
                   </div>
                   <div class="col-md-4 col-sm-4">
                     {% if item.sent_from == user%}
@@ -187,7 +187,7 @@
                   </div>
                   {%else%}
                     <div class="col-md-6 col-sm-6">
-                    <button class="abtn btn-success btn pull-right" id="a1{{item.sent_from.username}}">Accept</button>
+                    <button class="abtn btn-success btn pull-left" id="a1{{item.sent_from.username}}">Accept</button>
                     <button class="dbtn btn-danger btn pull-right " id="d1{{item.sent_from.username}}">Decline</button>
                   </div>             
                   {%endif%}
@@ -210,14 +210,14 @@
                   <div class="col-md-2 col-sm-2">
                     <img src="{{item.user.profile.profile_image.url}}" alt="user" class="profile-photo-lg">
                   </div>
-                  <div class="col-md-4 col-sm-4">
+                  <div class="col-md-4 col-sm-4 ml-3">
                     <h5><a href="{% url 'profile' item.user.profile.slug%}" class="profile-link">{{item.user.username}}</a></h5>                                        
                   </div>
                   {%if item.user == user%}
                   {%elif item.user in auth_user_friends_users%}
-                  <div class="col-md-6 col-sm-6">
+               <!--   <div class="col-md-6 col-sm-6 ">
                     <h6 class="mb-3 text-muted">friends</h6>
-                  </div>                
+                  </div>                -->
                   
                   {%elif item.user in users_requests_already_sent%}
                   <div class="col-md-6 col-sm-6">
@@ -297,9 +297,9 @@
         var elmIdd = elmId.substring(2) ;
         var like_count = $(`#li${elmIdd}`).text() ;
           
-          alert() ;
+          
      //   var elmIddd = elmId.substring(1) ;
-        alert(elmId);
+        
         $.ajax(
     {
         type:"GET",
@@ -335,7 +335,7 @@
         var elmId = $(this).attr("id");
         var elmIdd = elmId.substring(2) ;
         var elmIddd = elmId.substring(1) ;
-        alert(elmIdd)
+        
         $.ajax(
     {
         type:"GET",
@@ -355,7 +355,7 @@
         var elmId = $(this).attr("id");
         var elmIdd = elmId.substring(2) ;
         var elmIddd = elmId.substring(1) ;
-        alert(elmIdd)
+        
         $.ajax(
     {
         type:"GET",
@@ -373,7 +373,7 @@
     $(document).on("click",".sbtn",function(){
         var elmId = $(this).attr("id");
         var elmIdd = elmId.substring(2) ;
-        alert(elmIdd)
+        
         $.ajax(
     {
         type:"GET",
@@ -390,7 +390,7 @@
     $(document).on("click",".cbtn",function(){
       var elmId = $(this).attr("id");
       var elmIdd = elmId.substring(2) ;
-        alert(elmIdd)
+        
         $.ajax(
     {
         type:"GET",

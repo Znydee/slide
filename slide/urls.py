@@ -18,7 +18,7 @@ from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 from users.views import register,send_friend_request,cancel_friend_request,accept_friend_request, decline_friend_request,like_post,notifications_as_read,get_all_notifications,profileupdate
-from chat.views import register,mark_specific_as_read
+from chat.views import mark_specific_as_read
 from django.contrib.auth import views as auth_views
 import notifications.urls
 urlpatterns = [

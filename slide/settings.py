@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import django_heroku
+import dj_database_url
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +27,7 @@ SECRET_KEY = 'django-insecure-v2ic8e@o-6g_ltd_ln4ib%s-#!0)nl*e=^#b(9!bqi)+m))wxv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -80,6 +82,9 @@ WSGI_APPLICATION = 'slide.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+#DATABASES = {
+#'default': dj_database_url.config()
+#}
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -160,3 +165,5 @@ CHANNEL_LAYERS = {
     },
 }
 #>>>>>>> 09d6fee (implementing realtime chatapp)
+django_heroku.settings(locals())
+#'127.0.0.1' '197.211.61.57'
